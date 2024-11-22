@@ -1,0 +1,6 @@
+@H3Project.WebAPI_HostAddress = http://localhost:5177
+
+GET {{H3Project.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
