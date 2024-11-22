@@ -19,8 +19,4 @@
     <ProjectReference Include="..\H3Project.Data\H3Project.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
