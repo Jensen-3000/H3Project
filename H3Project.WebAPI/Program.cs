@@ -1,3 +1,5 @@
+using H3Project.Data.Context;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+var conn = builder.Configuration.GetConnectionString("LocalDbCinema");
+builder.Services.AddDbContext<CinemaDbContext>(options =>
+    options.UseSqlServer(conn));
 
 var app = builder.Build();
 
