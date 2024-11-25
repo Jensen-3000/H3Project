@@ -1,4 +1,4 @@
-﻿namespace H3Project.Data.Models;
+﻿namespace H3Project.Data.Models.Domain;
 
 public class Screen
 {

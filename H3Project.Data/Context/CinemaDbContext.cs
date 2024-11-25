@@ -1,4 +1,4 @@
-﻿using H3Project.Data.Models;
+﻿using H3Project.Data.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace H3Project.Data.Context;

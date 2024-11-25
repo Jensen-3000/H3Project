@@ -1,5 +1,5 @@
 ﻿using H3Project.Data.Context;
-using H3Project.Data.Models;
+using H3Project.Data.Models.Domain;
 using H3Project.Data.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,14 +32,14 @@ public class TicketController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets()
+    public async Task<IActionResult> GetTickets()
     {
         var tickets = await _ticketRepository.GetAllTicketsAsync();
         return Ok(tickets);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Ticket>> GetTicket(int id)
+    public async Task<IActionResult> GetTicket(int id)
     {
         var ticket = await _ticketRepository.GetTicketByIdAsync(id);
 
@@ -50,7 +50,7 @@ public class TicketController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Ticket>> PostTicket(Ticket ticket)
+    public async Task<IActionResult> PostTicket(Ticket ticket)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
