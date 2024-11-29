@@ -17,6 +17,7 @@ public class CinemaDbContext : DbContext
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Role> Roles { get; set; }
+    public DbSet<CinemaDetail> CinemaDetails { get; set; }
 
     public CinemaDbContext(DbContextOptions options) : base(options)
     {
