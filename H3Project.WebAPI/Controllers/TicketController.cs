@@ -1,8 +1,6 @@
-﻿using H3Project.Data.Context;
-using H3Project.Data.Models.Domain;
+﻿using H3Project.Data.Models.Domain;
 using H3Project.Data.Repository;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace H3Project.WebAPI.Controllers;
 
@@ -44,7 +42,9 @@ public class TicketController : ControllerBase
         var ticket = await _ticketRepository.GetTicketByIdAsync(id);
 
         if (ticket == null)
+        {
             return NotFound();
+        }
 
         return Ok(ticket);
     }
@@ -53,7 +53,9 @@ public class TicketController : ControllerBase
     public async Task<IActionResult> PostTicket(Ticket ticket)
     {
         if (!ModelState.IsValid)
+        {
             return BadRequest(ModelState);
+        }
 
         await _ticketRepository.AddTicketAsync(ticket);
 
@@ -64,11 +66,16 @@ public class TicketController : ControllerBase
     public async Task<IActionResult> PutTicket(int id, Ticket ticket)
     {
         if (id != ticket.TicketId)
+        {
             return BadRequest();
+        }
 
         if (!ModelState.IsValid)
+        {
             return BadRequest(ModelState);
+        }
 
+        // https://learn.microsoft.com/en-us/ef/core/saving/concurrency
         try
         {
             await _ticketRepository.UpdateTicketAsync(ticket);
@@ -77,7 +84,9 @@ public class TicketController : ControllerBase
         {
             var exists = await _ticketRepository.GetTicketByIdAsync(id);
             if (exists == null)
+            {
                 return NotFound();
+            }
             throw;
         }
 
@@ -88,10 +97,14 @@ public class TicketController : ControllerBase
     public async Task<IActionResult> DeleteTicket(int id)
     {
         var ticket = await _ticketRepository.GetTicketByIdAsync(id);
+
         if (ticket == null)
+        {
             return NotFound();
+        }
 
         await _ticketRepository.DeleteTicketAsync(id);
+
         return NoContent();
     }
 }
