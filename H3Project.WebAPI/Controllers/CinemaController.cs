@@ -10,7 +10,7 @@ public class CinemaController : ControllerBase
 {
     private readonly CinemaRepository _cinemaRepository;
 
-    public CinemaController(CinemaRepository(cinemaRepository)
+    public CinemaController(CinemaRepository cinemaRepository)
     {
         _cinemaRepository = cinemaRepository;
     }
