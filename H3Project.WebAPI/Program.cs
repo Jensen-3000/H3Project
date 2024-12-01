@@ -13,11 +13,14 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Services / models
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+//builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+// EF DbContext
+builder.Services.AddScoped<IAppDbContext, AppDbContext>();
 
 
 var conn = builder.Configuration.GetConnectionString("LocalDbCinema");
-builder.Services.AddDbContext<CinemaDbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(conn));
 
 var app = builder.Build();

@@ -6,13 +6,13 @@ namespace H3Project.Data.Repository;
 
 public class Repository<T> : IRepository<T> where T : class
 {
-    private readonly CinemaDbContext _cinemaDbContext;
+    private readonly AppDbContext _appDbContext;
     private readonly DbSet<T> _dbSet;
 
-    public Repository(CinemaDbContext cinemaDbContext)
+    public Repository(AppDbContext appDbContext)
     {
-        _cinemaDbContext = cinemaDbContext;
-        _dbSet = _cinemaDbContext.Set<T>();
+        _appDbContext = appDbContext;
+        _dbSet = _appDbContext.Set<T>();
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()
@@ -28,13 +28,13 @@ public class Repository<T> : IRepository<T> where T : class
     public async Task AddAsync(T entity)
     {
         await _dbSet.AddAsync(entity);
-        await _cinemaDbContext.SaveChangesAsync();
+        await _appDbContext.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(T entity)
     {
         _dbSet.Update(entity);
-        await _cinemaDbContext.SaveChangesAsync();
+        await _appDbContext.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)
@@ -44,7 +44,7 @@ public class Repository<T> : IRepository<T> where T : class
         if (entity != null)
         {
             _dbSet.Remove(entity);
-            await _cinemaDbContext.SaveChangesAsync();
+            await _appDbContext.SaveChangesAsync();
         }
     }
 }

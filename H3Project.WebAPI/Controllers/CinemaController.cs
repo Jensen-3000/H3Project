@@ -1,7 +1,8 @@
+using H3Project.Data.Context;
 using H3Project.Data.DTOs;
 using H3Project.Data.Models;
-using H3Project.Data.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace H3Project.WebAPI.Controllers;
 
@@ -9,18 +10,20 @@ namespace H3Project.WebAPI.Controllers;
 [ApiController]
 public class CinemaController : ControllerBase
 {
-    private readonly IRepository<Cinema> _cinemaRepository;
+    private readonly IAppDbContext _context;
 
-    public CinemaController(IRepository<Cinema> cinemaRepository)
+    public CinemaController(IAppDbContext context)
     {
-        _cinemaRepository = cinemaRepository;
+        _context = context;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetCinemas()
     {
-        var cinemas = await _cinemaRepository.GetAllAsync();
-        var cinemaDtos = cinemas.Select(c => new CinemaDto(c.Id, c.Name, c.Address));
+        var cinemaDtos = await _context.Cinemas
+            .AsNoTracking()
+            .Select(c => new CinemaDto(c.Id, c.Name, c.Address))
+            .ToListAsync();
 
         return Ok(cinemaDtos);
     }
@@ -28,13 +31,16 @@ public class CinemaController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetCinema(int id)
     {
-        var cinema = await _cinemaRepository.GetByIdAsync(id);
-        if (cinema == null)
+        var cinemaDto = await _context.Cinemas
+            .AsNoTracking()
+            .Where(c => c.Id == id)
+            .Select(c => new CinemaDto(c.Id, c.Name, c.Address))
+            .FirstOrDefaultAsync();
+
+        if (cinemaDto == null)
         {
             return NotFound();
         }
-
-        var cinemaDto = new CinemaDto(cinema.Id, cinema.Name, cinema.Address);
 
         return Ok(cinemaDto);
     }
@@ -48,7 +54,9 @@ public class CinemaController : ControllerBase
             Address = cinemaDto.Address
         };
 
-        await _cinemaRepository.AddAsync(cinema);
+        _context.Cinemas.Add(cinema);
+        await _context.SaveChangesAsync();
+
         var newCinemaDto = new CinemaDto(cinema.Id, cinema.Name, cinema.Address);
 
         return CreatedAtAction(nameof(GetCinema), new { id = newCinemaDto.Id }, newCinemaDto);
@@ -62,7 +70,7 @@ public class CinemaController : ControllerBase
             return BadRequest();
         }
 
-        var cinema = await _cinemaRepository.GetByIdAsync(id);
+        var cinema = await _context.Cinemas.FindAsync(id);
         if (cinema == null)
         {
             return NotFound();
@@ -71,7 +79,7 @@ public class CinemaController : ControllerBase
         cinema.Name = cinemaDto.Name;
         cinema.Address = cinemaDto.Address;
 
-        await _cinemaRepository.UpdateAsync(cinema);
+        await _context.SaveChangesAsync();
 
         return NoContent();
     }
@@ -79,13 +87,14 @@ public class CinemaController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteCinema(int id)
     {
-        var cinema = await _cinemaRepository.GetByIdAsync(id);
+        var cinema = await _context.Cinemas.FindAsync(id);
         if (cinema == null)
         {
             return NotFound();
         }
 
-        await _cinemaRepository.DeleteAsync(id);
+        _context.Cinemas.Remove(cinema);
+        await _context.SaveChangesAsync();
 
         return NoContent();
     }

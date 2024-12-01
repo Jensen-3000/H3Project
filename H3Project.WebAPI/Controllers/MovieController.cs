@@ -1,7 +1,8 @@
-﻿using H3Project.Data.DTOs;
+﻿using H3Project.Data.Context;
+using H3Project.Data.DTOs.Movies;
 using H3Project.Data.Models;
-using H3Project.Data.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace H3Project.WebAPI.Controllers;
 
@@ -9,75 +10,96 @@ namespace H3Project.WebAPI.Controllers;
 [ApiController]
 public class MovieController : ControllerBase
 {
-    private readonly IRepository<Movie> _movieRepository;
+    private readonly IAppDbContext _context;
 
-    public MovieController(IRepository<Movie> movieRepository)
+    public MovieController(IAppDbContext context)
     {
-        _movieRepository = movieRepository;
+        _context = context;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetMovies()
     {
-        var movies = await _movieRepository.GetAllAsync();
-        var movieDtos = movies.Select(m => new MovieDto(m.Id, m.GenreId, m.Title, m.Description, m.ReleaseDate, m.Duration));
+        var movies = await _context.Movies
+            .AsNoTracking()
+            .Include(m => m.Genres)
+            .ToListAsync();
 
-        return Ok(movieDtos);
+        var moviesDtos = movies.Select(MapToMovieDto).ToList();
+
+        return Ok(moviesDtos);
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetMovie(int id)
     {
-        var movie = await _movieRepository.GetByIdAsync(id);
+        var movie = await _context.Movies
+            .AsNoTracking()
+            .Include(m => m.Genres)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
         if (movie == null)
         {
             return NotFound();
         }
 
-        var movieDto = new MovieDto(movie.Id, movie.GenreId, movie.Title, movie.Description, movie.ReleaseDate, movie.Duration);
+        var movieDto = MapToMovieDto(movie);
 
         return Ok(movieDto);
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostMovie(MovieDto movieDto)
+    public async Task<IActionResult> PostMovie(MovieCreateDto movieCreateDto)
     {
+        var genres = await _context.Genres
+            .Where(g => movieCreateDto.GenreIds.Contains(g.Id))
+            .ToListAsync();
+
         var movie = new Movie
         {
-            GenreId = movieDto.GenreId,
-            Title = movieDto.Title,
-            Description = movieDto.Description,
-            ReleaseDate = movieDto.ReleaseDate,
-            Duration = movieDto.Duration
+            Title = movieCreateDto.Title,
+            Description = movieCreateDto.Description,
+            ReleaseDate = movieCreateDto.ReleaseDate,
+            Duration = movieCreateDto.Duration,
+            Genres = genres
         };
 
-        await _movieRepository.AddAsync(movie);
-        var newMovieDto = new MovieDto(movie.Id, movie.GenreId, movie.Title, movie.Description, movie.ReleaseDate, movie.Duration);
+        _context.Movies.Add(movie);
+        await _context.SaveChangesAsync();
+
+        var newMovieDto = MapToMovieDto(movie);
 
         return CreatedAtAction(nameof(GetMovie), new { id = newMovieDto.Id }, newMovieDto);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> PutMovie(int id, MovieDto movieDto)
+    public async Task<IActionResult> PutMovie(int id, MovieUpdateDto movieUpdateDto)
     {
-        if (id != movieDto.Id)
+        if (id != movieUpdateDto.Id)
         {
             return BadRequest();
         }
 
-        var movie = await _movieRepository.GetByIdAsync(id);
+        var movie = await _context.Movies
+            .Include(m => m.Genres)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
         if (movie == null)
         {
             return NotFound();
         }
 
-        movie.GenreId = movieDto.GenreId;
-        movie.Title = movieDto.Title;
-        movie.Description = movieDto.Description;
-        movie.ReleaseDate = movieDto.ReleaseDate;
-        movie.Duration = movieDto.Duration;
+        var genres = await _context.Genres
+            .Where(g => movieUpdateDto.GenreIds.Contains(g.Id))
+            .ToListAsync();
 
-        await _movieRepository.UpdateAsync(movie);
+        movie.Title = movieUpdateDto.Title;
+        movie.Description = movieUpdateDto.Description;
+        movie.ReleaseDate = movieUpdateDto.ReleaseDate;
+        movie.Duration = movieUpdateDto.Duration;
+        movie.Genres = genres;
+
+        await _context.SaveChangesAsync();
 
         return NoContent();
     }
@@ -85,14 +107,27 @@ public class MovieController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteMovie(int id)
     {
-        var movie = await _movieRepository.GetByIdAsync(id);
+        var movie = await _context.Movies.FindAsync(id);
         if (movie == null)
         {
             return NotFound();
         }
 
-        await _movieRepository.DeleteAsync(id);
+        _context.Movies.Remove(movie);
+        await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    private static MovieDto MapToMovieDto(Movie movie)
+    {
+        return new MovieDto(
+            movie.Id,
+            movie.Title,
+            movie.Description,
+            movie.ReleaseDate,
+            movie.Duration,
+            movie.Genres.Select(g => g.Name).ToList()
+        );
     }
 }

@@ -41,6 +41,22 @@ namespace H3Project.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Movies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Movies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -77,46 +93,25 @@ namespace H3Project.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Movies",
+                name: "GenreMovie",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Duration = table.Column<TimeSpan>(type: "time", nullable: false),
-                    GenreId = table.Column<int>(type: "int", nullable: false)
+                    GenresId = table.Column<int>(type: "int", nullable: false),
+                    MoviesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Movies", x => x.Id);
+                    table.PrimaryKey("PK_GenreMovie", x => new { x.GenresId, x.MoviesId });
                     table.ForeignKey(
-                        name: "FK_Movies_Genres_GenreId",
-                        column: x => x.GenreId,
+                        name: "FK_GenreMovie_Genres_GenresId",
+                        column: x => x.GenresId,
                         principalTable: "Genres",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Seats",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Number = table.Column<int>(type: "int", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
-                    TheaterId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Seats", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Seats_Theaters_TheaterId",
-                        column: x => x.TheaterId,
-                        principalTable: "Theaters",
+                        name: "FK_GenreMovie_Movies_MoviesId",
+                        column: x => x.MoviesId,
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -143,6 +138,28 @@ namespace H3Project.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Schedules_Theaters_TheaterId",
+                        column: x => x.TheaterId,
+                        principalTable: "Theaters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Seats",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Number = table.Column<int>(type: "int", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
+                    TheaterId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Seats", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Seats_Theaters_TheaterId",
                         column: x => x.TheaterId,
                         principalTable: "Theaters",
                         principalColumn: "Id",
@@ -204,6 +221,16 @@ namespace H3Project.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Movies",
+                columns: new[] { "Id", "Description", "Duration", "ReleaseDate", "Title" },
+                values: new object[,]
+                {
+                    { 1, "High-speed action", new TimeSpan(0, 2, 30, 0, 0), new DateTime(2024, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Fast & Furious 10" },
+                    { 2, "Hilarious comedy", new TimeSpan(0, 1, 45, 0, 0), new DateTime(2024, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Laugh Out Loud" },
+                    { 3, "Heartfelt drama", new TimeSpan(0, 2, 10, 0, 0), new DateTime(2024, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Deep Emotions" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Email", "PasswordHash", "UserType", "Username" },
                 values: new object[,]
@@ -213,13 +240,14 @@ namespace H3Project.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Movies",
-                columns: new[] { "Id", "Description", "Duration", "GenreId", "ReleaseDate", "Title" },
+                table: "GenreMovie",
+                columns: new[] { "GenresId", "MoviesId" },
                 values: new object[,]
                 {
-                    { 1, "High-speed action", new TimeSpan(0, 2, 30, 0, 0), 1, new DateTime(2024, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Fast & Furious 10" },
-                    { 2, "Hilarious comedy", new TimeSpan(0, 1, 45, 0, 0), 2, new DateTime(2024, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Laugh Out Loud" },
-                    { 3, "Heartfelt drama", new TimeSpan(0, 2, 10, 0, 0), 3, new DateTime(2024, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Deep Emotions" }
+                    { 1, 1 },
+                    { 2, 1 },
+                    { 2, 2 },
+                    { 3, 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -263,9 +291,9 @@ namespace H3Project.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Movies_GenreId",
-                table: "Movies",
-                column: "GenreId");
+                name: "IX_GenreMovie_MoviesId",
+                table: "GenreMovie",
+                column: "MoviesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schedules_MovieId",
@@ -307,7 +335,13 @@ namespace H3Project.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "GenreMovie");
+
+            migrationBuilder.DropTable(
                 name: "Tickets");
+
+            migrationBuilder.DropTable(
+                name: "Genres");
 
             migrationBuilder.DropTable(
                 name: "Schedules");
@@ -323,9 +357,6 @@ namespace H3Project.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Theaters");
-
-            migrationBuilder.DropTable(
-                name: "Genres");
 
             migrationBuilder.DropTable(
                 name: "Cinemas");

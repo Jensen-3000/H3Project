@@ -29,10 +29,22 @@ public static class ModelBuilderExtensions
 
         // Seed Movies
         modelBuilder.Entity<Movie>().HasData(
-            new Movie { Id = 1, Title = "Fast & Furious 10", Description = "High-speed action", GenreId = 1, ReleaseDate = new DateTime(2024, 1, 15), Duration = new TimeSpan(2, 30, 0) },
-            new Movie { Id = 2, Title = "Laugh Out Loud", Description = "Hilarious comedy", GenreId = 2, ReleaseDate = new DateTime(2024, 2, 10), Duration = new TimeSpan(1, 45, 0) },
-            new Movie { Id = 3, Title = "Deep Emotions", Description = "Heartfelt drama", GenreId = 3, ReleaseDate = new DateTime(2024, 3, 5), Duration = new TimeSpan(2, 10, 0) }
+            new Movie { Id = 1, Title = "Fast & Furious 10", Description = "High-speed action", ReleaseDate = new DateTime(2024, 1, 15), Duration = new TimeSpan(2, 30, 0) },
+            new Movie { Id = 2, Title = "Laugh Out Loud", Description = "Hilarious comedy", ReleaseDate = new DateTime(2024, 2, 10), Duration = new TimeSpan(1, 45, 0) },
+            new Movie { Id = 3, Title = "Deep Emotions", Description = "Heartfelt drama", ReleaseDate = new DateTime(2024, 3, 5), Duration = new TimeSpan(2, 10, 0) }
         );
+
+
+        // Seed join table for Movies and Genres
+        modelBuilder.Entity<Movie>()
+            .HasMany(m => m.Genres)
+            .WithMany(g => g.Movies)
+            .UsingEntity(j => j.HasData(
+                new { MoviesId = 1, GenresId = 1 }, // Fast & Furious 10 is Action
+                new { MoviesId = 1, GenresId = 2 }, // Fast & Furious 10 is Comedy
+                new { MoviesId = 2, GenresId = 2 }, // Laugh Out Loud is Comedy
+                new { MoviesId = 3, GenresId = 3 }  // Deep Emotions is Drama
+            ));
 
         // Seed Schedules
         modelBuilder.Entity<Schedule>().HasData(

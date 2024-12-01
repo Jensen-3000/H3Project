@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace H3Project.Data.Context;
 
-public class CinemaDbContext : DbContext
+public class AppDbContext : DbContext, IAppDbContext
 {
     private readonly DbContextOptions _options;
 
@@ -17,8 +17,7 @@ public class CinemaDbContext : DbContext
     public DbSet<Ticket> Tickets { get; set; }
     public DbSet<User> Users { get; set; }
 
-
-    public CinemaDbContext(DbContextOptions options) : base(options)
+    public AppDbContext(DbContextOptions options) : base(options)
     {
         _options = options;
     }

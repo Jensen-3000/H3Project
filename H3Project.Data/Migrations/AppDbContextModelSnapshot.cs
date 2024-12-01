@@ -4,19 +4,16 @@ using H3Project.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace H3Project.Data.Migrations
 {
-    [DbContext(typeof(CinemaDbContext))]
-    [Migration("20241201182250_Init")]
-    partial class Init
+    [DbContext(typeof(AppDbContext))]
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,6 +21,43 @@ namespace H3Project.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("GenreMovie", b =>
+                {
+                    b.Property<int>("GenresId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MoviesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GenresId", "MoviesId");
+
+                    b.HasIndex("MoviesId");
+
+                    b.ToTable("GenreMovie");
+
+                    b.HasData(
+                        new
+                        {
+                            GenresId = 1,
+                            MoviesId = 1
+                        },
+                        new
+                        {
+                            GenresId = 2,
+                            MoviesId = 1
+                        },
+                        new
+                        {
+                            GenresId = 2,
+                            MoviesId = 2
+                        },
+                        new
+                        {
+                            GenresId = 3,
+                            MoviesId = 3
+                        });
+                });
 
             modelBuilder.Entity("H3Project.Data.Models.Cinema", b =>
                 {
@@ -109,9 +143,6 @@ namespace H3Project.Data.Migrations
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
 
@@ -121,8 +152,6 @@ namespace H3Project.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GenreId");
-
                     b.ToTable("Movies");
 
                     b.HasData(
@@ -131,7 +160,6 @@ namespace H3Project.Data.Migrations
                             Id = 1,
                             Description = "High-speed action",
                             Duration = new TimeSpan(0, 2, 30, 0, 0),
-                            GenreId = 1,
                             ReleaseDate = new DateTime(2024, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Fast & Furious 10"
                         },
@@ -140,7 +168,6 @@ namespace H3Project.Data.Migrations
                             Id = 2,
                             Description = "Hilarious comedy",
                             Duration = new TimeSpan(0, 1, 45, 0, 0),
-                            GenreId = 2,
                             ReleaseDate = new DateTime(2024, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Laugh Out Loud"
                         },
@@ -149,7 +176,6 @@ namespace H3Project.Data.Migrations
                             Id = 3,
                             Description = "Heartfelt drama",
                             Duration = new TimeSpan(0, 2, 10, 0, 0),
-                            GenreId = 3,
                             ReleaseDate = new DateTime(2024, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Deep Emotions"
                         });
@@ -416,15 +442,19 @@ namespace H3Project.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.Movie", b =>
+            modelBuilder.Entity("GenreMovie", b =>
                 {
-                    b.HasOne("H3Project.Data.Models.Genre", "Genre")
-                        .WithMany("Movies")
-                        .HasForeignKey("GenreId")
+                    b.HasOne("H3Project.Data.Models.Genre", null)
+                        .WithMany()
+                        .HasForeignKey("GenresId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Genre");
+                    b.HasOne("H3Project.Data.Models.Movie", null)
+                        .WithMany()
+                        .HasForeignKey("MoviesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("H3Project.Data.Models.Schedule", b =>
@@ -498,11 +528,6 @@ namespace H3Project.Data.Migrations
             modelBuilder.Entity("H3Project.Data.Models.Cinema", b =>
                 {
                     b.Navigation("Theaters");
-                });
-
-            modelBuilder.Entity("H3Project.Data.Models.Genre", b =>
-                {
-                    b.Navigation("Movies");
                 });
 
             modelBuilder.Entity("H3Project.Data.Models.Movie", b =>
