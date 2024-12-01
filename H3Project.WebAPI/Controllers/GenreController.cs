@@ -1,5 +1,6 @@
-using H3Project.Data.Models.Domain;
-using H3Project.Data.Repository;
+using H3Project.Data.DTOs;
+using H3Project.Data.Models;
+using H3Project.Data.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace H3Project.WebAPI.Controllers;
@@ -8,9 +9,9 @@ namespace H3Project.WebAPI.Controllers;
 [ApiController]
 public class GenreController : ControllerBase
 {
-    private readonly GenreRepository _genreRepository;
+    private readonly IRepository<Genre> _genreRepository;
 
-    public GenreController(GenreRepository genreRepository)
+    public GenreController(IRepository<Genre> genreRepository)
     {
         _genreRepository = genreRepository;
     }
@@ -18,71 +19,72 @@ public class GenreController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetGenres()
     {
-        var genres = await _genreRepository.GetAllGenresAsync();
-        return Ok(genres);
+        var genres = await _genreRepository.GetAllAsync();
+        var genreDtos = genres.Select(g => new GenreDto(g.Id, g.Name));
+
+        return Ok(genreDtos);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetGenre(int id)
     {
-        var genre = await _genreRepository.GetGenreByIdAsync(id);
-
+        var genre = await _genreRepository.GetByIdAsync(id);
         if (genre == null)
         {
             return NotFound();
         }
 
-        return Ok(genre);
+        var genreDto = new GenreDto(genre.Id, genre.Name);
+
+        return Ok(genreDto);
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostGenre(Genre genre)
+    public async Task<IActionResult> PostGenre(GenreDto genreDto)
     {
-        if (!ModelState.IsValid)
+        var genre = new Genre
         {
-            return BadRequest(ModelState);
-        }
+            Name = genreDto.Name
+        };
 
-        await _genreRepository.AddGenreAsync(genre);
+        await _genreRepository.AddAsync(genre);
+        var newGenreDto = new GenreDto(genre.Id, genre.Name);
 
-        return CreatedAtAction(nameof(GetGenre), new { id = genre.GenreId }, genre);
+        return CreatedAtAction(nameof(GetGenre), new { id = newGenreDto.Id }, newGenreDto);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutGenre(int id, Genre genre)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> PutGenre(int id, GenreDto genreDto)
     {
-        if (id != genre.GenreId)
+        if (id != genreDto.Id)
         {
             return BadRequest();
         }
 
-        if (!ModelState.IsValid)
+        var genre = await _genreRepository.GetByIdAsync(id);
+        if (genre == null)
         {
-            return BadRequest(ModelState);
+            return NotFound();
         }
 
-        try
-        {
-            await _genreRepository.UpdateGenreAsync(genre);
-        }
-        catch (Exception)
-        {
-            var exists = await _genreRepository.GetGenreByIdAsync(id);
-            if (exists == null)
-            {
-                return NotFound();
-            }
+        genre.Name = genreDto.Name;
 
-            return BadRequest();
-        }
+        await _genreRepository.UpdateAsync(genre);
 
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteGenre(int id)
     {
-        await _genreRepository.DeleteGenreAsync(id);
+        var genre = await _genreRepository.GetByIdAsync(id);
+        if (genre == null)
+        {
+            return NotFound();
+        }
+
+        await _genreRepository.DeleteAsync(id);
+
         return NoContent();
     }
 }

@@ -1,5 +1,6 @@
-using H3Project.Data.Models.Domain;
-using H3Project.Data.Repository;
+using H3Project.Data.DTOs;
+using H3Project.Data.Models;
+using H3Project.Data.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace H3Project.WebAPI.Controllers;
@@ -8,9 +9,9 @@ namespace H3Project.WebAPI.Controllers;
 [ApiController]
 public class CinemaController : ControllerBase
 {
-    private readonly CinemaRepository _cinemaRepository;
+    private readonly IRepository<Cinema> _cinemaRepository;
 
-    public CinemaController(CinemaRepository cinemaRepository)
+    public CinemaController(IRepository<Cinema> cinemaRepository)
     {
         _cinemaRepository = cinemaRepository;
     }
@@ -18,71 +19,74 @@ public class CinemaController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetCinemas()
     {
-        var cinemas = await _cinemaRepository.GetAllCinemasAsync();
-        return Ok(cinemas);
+        var cinemas = await _cinemaRepository.GetAllAsync();
+        var cinemaDtos = cinemas.Select(c => new CinemaDto(c.Id, c.Name, c.Address));
+
+        return Ok(cinemaDtos);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetCinema(int id)
     {
-        var cinema = await _cinemaRepository.GetCinemaByIdAsync(id);
-
+        var cinema = await _cinemaRepository.GetByIdAsync(id);
         if (cinema == null)
         {
             return NotFound();
         }
 
-        return Ok(cinema);
+        var cinemaDto = new CinemaDto(cinema.Id, cinema.Name, cinema.Address);
+
+        return Ok(cinemaDto);
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostCinema(Cinema cinema)
+    public async Task<IActionResult> PostCinema(CinemaDto cinemaDto)
     {
-        if (!ModelState.IsValid)
+        var cinema = new Cinema
         {
-            return BadRequest(ModelState);
-        }
+            Name = cinemaDto.Name,
+            Address = cinemaDto.Address
+        };
 
-        await _cinemaRepository.AddCinemaAsync(cinema);
+        await _cinemaRepository.AddAsync(cinema);
+        var newCinemaDto = new CinemaDto(cinema.Id, cinema.Name, cinema.Address);
 
-        return CreatedAtAction(nameof(GetCinema), new { id = cinema.CinemaId }, cinema);
+        return CreatedAtAction(nameof(GetCinema), new { id = newCinemaDto.Id }, newCinemaDto);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutCinema(int id, Cinema cinema)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> PutCinema(int id, CinemaDto cinemaDto)
     {
-        if (id != cinema.CinemaId)
+        if (id != cinemaDto.Id)
         {
             return BadRequest();
         }
 
-        if (!ModelState.IsValid)
+        var cinema = await _cinemaRepository.GetByIdAsync(id);
+        if (cinema == null)
         {
-            return BadRequest(ModelState);
+            return NotFound();
         }
 
-        try
-        {
-            await _cinemaRepository.UpdateCinemaAsync(cinema);
-        }
-        catch (Exception)
-        {
-            var exists = await _cinemaRepository.GetCinemaByIdAsync(id);
-            if (exists == null)
-            {
-                return NotFound();
-            }
+        cinema.Name = cinemaDto.Name;
+        cinema.Address = cinemaDto.Address;
 
-            return BadRequest();
-        }
+        await _cinemaRepository.UpdateAsync(cinema);
 
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteCinema(int id)
     {
-        await _cinemaRepository.DeleteCinemaAsync(id);
+        var cinema = await _cinemaRepository.GetByIdAsync(id);
+        if (cinema == null)
+        {
+            return NotFound();
+        }
+
+        await _cinemaRepository.DeleteAsync(id);
+
         return NoContent();
     }
 }

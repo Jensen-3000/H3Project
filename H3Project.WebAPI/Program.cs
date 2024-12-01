@@ -1,5 +1,6 @@
 using H3Project.Data.Context;
 using H3Project.Data.Repository;
+using H3Project.Data.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -12,18 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Services / models
-builder.Services.AddScoped<BookingRepository>();
-builder.Services.AddScoped<CinemaRepository>();
-builder.Services.AddScoped<CinemaDetailRepository>();
-builder.Services.AddScoped<CustomerRepository>();
-builder.Services.AddScoped<EmployeeRepository>();
-builder.Services.AddScoped<GenreRepository>();
-builder.Services.AddScoped<MovieRepository>();
-builder.Services.AddScoped<RoleRepository>();
-builder.Services.AddScoped<ScreenRepository>();
-builder.Services.AddScoped<SeatRepository>();
-builder.Services.AddScoped<ShowtimeRepository>();
-builder.Services.AddScoped<TicketRepository>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 
 var conn = builder.Configuration.GetConnectionString("LocalDbCinema");
