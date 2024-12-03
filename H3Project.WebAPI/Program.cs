@@ -15,6 +15,15 @@ builder.Services.AddOpenApi();
 // Services / models
 //builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost", policy =>
+        policy.WithOrigins("http://localhost:4200") // Allow your Angular app
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
 // EF DbContext
 builder.Services.AddScoped<IAppDbContext, AppDbContext>();
 
@@ -37,5 +46,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowLocalhost"); // Use the CORS policy
 
 app.Run();
