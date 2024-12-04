@@ -48,7 +48,7 @@ namespace H3Project.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReleaseDate = table.Column<DateOnly>(type: "date", nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: false)
                 },
                 constraints: table =>
@@ -225,9 +225,9 @@ namespace H3Project.Data.Migrations
                 columns: new[] { "Id", "Description", "Duration", "ReleaseDate", "Title" },
                 values: new object[,]
                 {
-                    { 1, "High-speed action", new TimeSpan(0, 2, 30, 0, 0), new DateTime(2024, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Fast & Furious 10" },
-                    { 2, "Hilarious comedy", new TimeSpan(0, 1, 45, 0, 0), new DateTime(2024, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Laugh Out Loud" },
-                    { 3, "Heartfelt drama", new TimeSpan(0, 2, 10, 0, 0), new DateTime(2024, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Deep Emotions" }
+                    { 1, "High-speed action", new TimeSpan(0, 2, 30, 0, 0), new DateOnly(2024, 1, 15), "Fast & Furious 10" },
+                    { 2, "Hilarious comedy", new TimeSpan(0, 1, 45, 0, 0), new DateOnly(2024, 2, 10), "Laugh Out Loud" },
+                    { 3, "Heartfelt drama", new TimeSpan(0, 2, 10, 0, 0), new DateOnly(2024, 3, 5), "Deep Emotions" }
                 });
 
             migrationBuilder.InsertData(

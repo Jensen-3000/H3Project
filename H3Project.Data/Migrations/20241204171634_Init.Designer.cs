@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace H3Project.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241201214451_Init")]
+    [Migration("20241204171634_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -146,8 +146,8 @@ namespace H3Project.Data.Migrations
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
-                    b.Property<DateTime>("ReleaseDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("ReleaseDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -163,7 +163,7 @@ namespace H3Project.Data.Migrations
                             Id = 1,
                             Description = "High-speed action",
                             Duration = new TimeSpan(0, 2, 30, 0, 0),
-                            ReleaseDate = new DateTime(2024, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReleaseDate = new DateOnly(2024, 1, 15),
                             Title = "Fast & Furious 10"
                         },
                         new
@@ -171,7 +171,7 @@ namespace H3Project.Data.Migrations
                             Id = 2,
                             Description = "Hilarious comedy",
                             Duration = new TimeSpan(0, 1, 45, 0, 0),
-                            ReleaseDate = new DateTime(2024, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReleaseDate = new DateOnly(2024, 2, 10),
                             Title = "Laugh Out Loud"
                         },
                         new
@@ -179,7 +179,7 @@ namespace H3Project.Data.Migrations
                             Id = 3,
                             Description = "Heartfelt drama",
                             Duration = new TimeSpan(0, 2, 10, 0, 0),
-                            ReleaseDate = new DateTime(2024, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReleaseDate = new DateOnly(2024, 3, 5),
                             Title = "Deep Emotions"
                         });
                 });
