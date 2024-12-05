@@ -1,5 +1,5 @@
 using H3Project.Data.Context;
-using H3Project.Data.DTOs;
+using H3Project.Data.DTOs.Cinemas;
 using H3Project.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
