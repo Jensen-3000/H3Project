@@ -34,7 +34,6 @@ public static class ModelBuilderExtensions
             new Movie { Id = 3, Title = "Deep Emotions", Description = "Heartfelt drama", ReleaseDate = new DateOnly(2024, 3, 5), Duration = new TimeSpan(2, 10, 0) }
         );
 
-
         // Seed join table for Movies and Genres
         modelBuilder.Entity<Movie>()
             .HasMany(m => m.Genres)
@@ -63,14 +62,23 @@ public static class ModelBuilderExtensions
 
         // Seed Users
         modelBuilder.Entity<User>().HasData(
-            new User { Id = 1, Username = "john_doe", Email = "john@example.com", PasswordHash = "hashed_password_1", UserType = "Customer" },
-            new User { Id = 2, Username = "jane_smith", Email = "jane@example.com", PasswordHash = "hashed_password_2", UserType = "Admin" }
+            new User { Id = 1, Username = "john_doe", Email = "john@example.com", PasswordHash = "hashed_password_1", UserRoleId = 1 },
+            new User { Id = 2, Username = "jane_smith", Email = "jane@example.com", PasswordHash = "hashed_password_2", UserRoleId = 2 },
+            new User { Id = 3, Username = "alice_jones", Email = "alice@example.com", PasswordHash = "hashed_password_3", UserRoleId = 2 }
+        );
+
+        // Seed UserRoles
+        modelBuilder.Entity<UserRole>().HasData(
+            new UserRole { Id = 1, Role = "Admin" },
+            new UserRole { Id = 2, Role = "Customer" }
         );
 
         // Seed Tickets
         modelBuilder.Entity<Ticket>().HasData(
-            new Ticket { Id = 1, ScheduleId = 1, SeatId = 1, UserId = 1, PurchaseDate = new DateTime(2024, 1, 15, 14, 0, 0), Price = 10.99m },
-            new Ticket { Id = 2, ScheduleId = 2, SeatId = 3, UserId = 2, PurchaseDate = new DateTime(2024, 2, 10, 10, 0, 0), Price = 8.50m }
+            new Ticket { Id = 1, ScheduleId = 1, SeatId = 1, UserId = 2, PurchaseDate = new DateTime(2024, 1, 15, 14, 0, 0), Price = 10.99m },
+            new Ticket { Id = 2, ScheduleId = 2, SeatId = 3, UserId = 3, PurchaseDate = new DateTime(2024, 2, 10, 10, 0, 0), Price = 8.50m },
+            new Ticket { Id = 3, ScheduleId = 2, SeatId = 4, UserId = 3, PurchaseDate = new DateTime(2024, 2, 10, 10, 0, 0), Price = 8.50m }
+
         );
     }
 }

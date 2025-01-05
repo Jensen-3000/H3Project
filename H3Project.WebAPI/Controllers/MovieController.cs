@@ -18,73 +18,66 @@ public class MovieController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetMovies()
+    public async Task<IActionResult> GetAllMovies()
     {
-        var movies = await _context.Movies
+        var movieModels = await _context.Movies
             .AsNoTracking()
             .Include(m => m.Genres)
             .ToListAsync();
 
-        var moviesDtos = movies.Select(MapToMovieDto).ToList();
+        var movieDtos = movieModels.Select(MapModelToReadDto).ToList();
 
-        return Ok(moviesDtos);
+        return Ok(movieDtos);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetMovie(int id)
+    public async Task<IActionResult> GetMovieById(int id)
     {
-        var movie = await _context.Movies
+        var movieModel = await _context.Movies
             .AsNoTracking()
             .Include(m => m.Genres)
             .FirstOrDefaultAsync(m => m.Id == id);
 
-        if (movie == null)
+        if (movieModel == null)
         {
             return NotFound();
         }
 
-        var movieDto = MapToMovieDto(movie);
+        var movieDto = MapModelToReadDto(movieModel);
 
         return Ok(movieDto);
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostMovie(MovieCreateDto movieCreateDto)
+    public async Task<IActionResult> CreateMovie(MovieCreateDto movieCreateDto)
     {
         var genres = await _context.Genres
             .Where(g => movieCreateDto.GenreIds.Contains(g.Id))
             .ToListAsync();
 
-        var movie = new Movie
-        {
-            Title = movieCreateDto.Title,
-            Description = movieCreateDto.Description,
-            ReleaseDate = movieCreateDto.ReleaseDate,
-            Duration = movieCreateDto.Duration,
-            Genres = genres
-        };
+        var movieModel = MapCreateDtoToModel(movieCreateDto, genres);
 
-        _context.Movies.Add(movie);
+        _context.Movies.Add(movieModel);
         await _context.SaveChangesAsync();
 
-        var newMovieDto = MapToMovieDto(movie);
+        var newMovieDto = MapModelToReadDto(movieModel);
 
-        return CreatedAtAction(nameof(GetMovie), new { id = newMovieDto.Id }, newMovieDto);
+        return CreatedAtAction(nameof(GetMovieById), new { id = newMovieDto.Id }, newMovieDto);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> PutMovie(int id, MovieUpdateDto movieUpdateDto)
+    public async Task<IActionResult> UpdateMovie(int id, MovieUpdateDto movieUpdateDto)
     {
         if (id != movieUpdateDto.Id)
         {
             return BadRequest();
         }
 
-        var movie = await _context.Movies
+        var movieModel = await _context.Movies
             .Include(m => m.Genres)
             .FirstOrDefaultAsync(m => m.Id == id);
 
-        if (movie == null)
+        if (movieModel == null)
         {
             return NotFound();
         }
@@ -93,11 +86,7 @@ public class MovieController : ControllerBase
             .Where(g => movieUpdateDto.GenreIds.Contains(g.Id))
             .ToListAsync();
 
-        movie.Title = movieUpdateDto.Title;
-        movie.Description = movieUpdateDto.Description;
-        movie.ReleaseDate = movieUpdateDto.ReleaseDate;
-        movie.Duration = movieUpdateDto.Duration;
-        movie.Genres = genres;
+        MapUpdateDtoToModel(movieUpdateDto, movieModel, genres);
 
         await _context.SaveChangesAsync();
 
@@ -107,27 +96,42 @@ public class MovieController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteMovie(int id)
     {
-        var movie = await _context.Movies.FindAsync(id);
-        if (movie == null)
+        var movieModel = await _context.Movies.FindAsync(id);
+        if (movieModel == null)
         {
             return NotFound();
         }
 
-        _context.Movies.Remove(movie);
+        _context.Movies.Remove(movieModel);
         await _context.SaveChangesAsync();
 
         return NoContent();
     }
 
-    private static MovieDto MapToMovieDto(Movie movie)
+    private static MovieReadDto MapModelToReadDto(Movie movie) => new(
+        movie.Id,
+        movie.Title,
+        movie.Description,
+        movie.ReleaseDate,
+        movie.Duration,
+        movie.Genres.Select(g => g.Name).ToList()
+    );
+
+    private static Movie MapCreateDtoToModel(MovieCreateDto movieCreateDto, List<Genre> genres) => new()
     {
-        return new MovieDto(
-            movie.Id,
-            movie.Title,
-            movie.Description,
-            movie.ReleaseDate,
-            movie.Duration,
-            movie.Genres.Select(g => g.Name).ToList()
-        );
+        Title = movieCreateDto.Title,
+        Description = movieCreateDto.Description,
+        ReleaseDate = movieCreateDto.ReleaseDate,
+        Duration = movieCreateDto.Duration,
+        Genres = genres
+    };
+
+    private static void MapUpdateDtoToModel(MovieUpdateDto movieUpdateDto, Movie movie, List<Genre> genres)
+    {
+        movie.Title = movieUpdateDto.Title;
+        movie.Description = movieUpdateDto.Description;
+        movie.ReleaseDate = movieUpdateDto.ReleaseDate;
+        movie.Duration = movieUpdateDto.Duration;
+        movie.Genres = genres;
     }
 }

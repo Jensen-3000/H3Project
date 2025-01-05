@@ -57,19 +57,16 @@ namespace H3Project.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "UserRoles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserType = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_UserRoles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -117,6 +114,28 @@ namespace H3Project.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserRoleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_UserRoles_UserRoleId",
+                        column: x => x.UserRoleId,
+                        principalTable: "UserRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Schedules",
                 columns: table => new
                 {
@@ -150,7 +169,7 @@ namespace H3Project.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Row = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Number = table.Column<int>(type: "int", nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     TheaterId = table.Column<int>(type: "int", nullable: false)
@@ -231,12 +250,12 @@ namespace H3Project.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "Id", "Email", "PasswordHash", "UserType", "Username" },
+                table: "UserRoles",
+                columns: new[] { "Id", "Role" },
                 values: new object[,]
                 {
-                    { 1, "john@example.com", "hashed_password_1", "Customer", "john_doe" },
-                    { 2, "jane@example.com", "hashed_password_2", "Admin", "jane_smith" }
+                    { 1, "Admin" },
+                    { 2, "Customer" }
                 });
 
             migrationBuilder.InsertData(
@@ -258,6 +277,16 @@ namespace H3Project.Data.Migrations
                     { 1, 1, "Screen 1" },
                     { 2, 1, "Screen 2" },
                     { 3, 2, "Screen 1" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "PasswordHash", "UserRoleId", "Username" },
+                values: new object[,]
+                {
+                    { 1, "john@example.com", "hashed_password_1", 1, "john_doe" },
+                    { 2, "jane@example.com", "hashed_password_2", 2, "jane_smith" },
+                    { 3, "alice@example.com", "hashed_password_3", 2, "alice_jones" }
                 });
 
             migrationBuilder.InsertData(
@@ -286,8 +315,9 @@ namespace H3Project.Data.Migrations
                 columns: new[] { "Id", "Price", "PurchaseDate", "ScheduleId", "SeatId", "UserId" },
                 values: new object[,]
                 {
-                    { 1, 10.99m, new DateTime(2024, 1, 15, 14, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1 },
-                    { 2, 8.50m, new DateTime(2024, 2, 10, 10, 0, 0, 0, DateTimeKind.Unspecified), 2, 3, 2 }
+                    { 1, 10.99m, new DateTime(2024, 1, 15, 14, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 2 },
+                    { 2, 8.50m, new DateTime(2024, 2, 10, 10, 0, 0, 0, DateTimeKind.Unspecified), 2, 3, 3 },
+                    { 3, 8.50m, new DateTime(2024, 2, 10, 10, 0, 0, 0, DateTimeKind.Unspecified), 2, 4, 3 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -304,6 +334,12 @@ namespace H3Project.Data.Migrations
                 name: "IX_Schedules_TheaterId",
                 table: "Schedules",
                 column: "TheaterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Seats_Row_Number_TheaterId",
+                table: "Seats",
+                columns: new[] { "Row", "Number", "TheaterId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Seats_TheaterId",
@@ -329,6 +365,17 @@ namespace H3Project.Data.Migrations
                 name: "IX_Tickets_UserId",
                 table: "Tickets",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_UserRoleId",
+                table: "Users",
+                column: "UserRoleId");
         }
 
         /// <inheritdoc />
@@ -357,6 +404,9 @@ namespace H3Project.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Theaters");
+
+            migrationBuilder.DropTable(
+                name: "UserRoles");
 
             migrationBuilder.DropTable(
                 name: "Cinemas");

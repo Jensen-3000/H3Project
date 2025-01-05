@@ -1,5 +1,6 @@
 using H3Project.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace H3Project.Data.Context;
 
@@ -14,4 +15,5 @@ public interface IAppDbContext
     DbSet<Ticket> Tickets { get; set; }
     DbSet<User> Users { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    EntityEntry Entry(object entity);
 }

@@ -18,64 +18,62 @@ public class GenreController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetGenres()
+    public async Task<IActionResult> GetAllGenres()
     {
-        var genresDtos = await _context.Genres
+        var genreModels = await _context.Genres
             .AsNoTracking()
-            .Select(g => new GenreDto(g.Id, g.Name))
             .ToListAsync();
 
-        return Ok(genresDtos);
+        var genreDtos = genreModels.Select(MapModelToReadDto).ToList();
+
+        return Ok(genreDtos);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetGenre(int id)
+    public async Task<IActionResult> GetGenreById(int id)
     {
-        var genreDto = await _context.Genres
+        var genreModel = await _context.Genres
             .AsNoTracking()
-            .Where(g => g.Id == id)
-            .Select(g => new GenreDto(g.Id, g.Name))
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(g => g.Id == id);
 
-        if (genreDto == null)
+        if (genreModel == null)
         {
             return NotFound();
         }
+
+        var genreDto = MapModelToReadDto(genreModel);
 
         return Ok(genreDto);
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostGenre(GenreDto genreDto)
+    public async Task<IActionResult> CreateGenre(GenreCreateDto genreCreateDto)
     {
-        var genre = new Genre
-        {
-            Name = genreDto.Name
-        };
+        var genreModel = MapCreateDtoToModel(genreCreateDto);
 
-        _context.Genres.Add(genre);
+        _context.Genres.Add(genreModel);
         await _context.SaveChangesAsync();
 
-        var newGenreDto = new GenreDto(genre.Id, genre.Name);
+        var newGenreDto = MapModelToReadDto(genreModel);
 
-        return CreatedAtAction(nameof(GetGenre), new { id = newGenreDto.Id }, newGenreDto);
+        return CreatedAtAction(nameof(GetGenreById), new { id = newGenreDto.Id }, newGenreDto);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> PutGenre(int id, GenreDto genreDto)
+    public async Task<IActionResult> UpdateGenre(int id, GenreUpdateDto genreUpdateDto)
     {
-        if (id != genreDto.Id)
+        if (id != genreUpdateDto.Id)
         {
             return BadRequest();
         }
 
-        var genre = await _context.Genres.FindAsync(id);
-        if (genre == null)
+        var genreModel = await _context.Genres.FindAsync(id);
+        if (genreModel == null)
         {
             return NotFound();
         }
 
-        genre.Name = genreDto.Name;
+        genreModel.Name = genreUpdateDto.Name;
 
         await _context.SaveChangesAsync();
 
@@ -85,15 +83,19 @@ public class GenreController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteGenre(int id)
     {
-        var genre = await _context.Genres.FindAsync(id);
-        if (genre == null)
+        var genreModel = await _context.Genres.FindAsync(id);
+        if (genreModel == null)
         {
             return NotFound();
         }
 
-        _context.Genres.Remove(genre);
+        _context.Genres.Remove(genreModel);
         await _context.SaveChangesAsync();
 
         return NoContent();
     }
+
+    private static GenreReadDto MapModelToReadDto(Genre genre) => new(genre.Id, genre.Name);
+
+    private static Genre MapCreateDtoToModel(GenreCreateDto genreCreateDto) => new() { Name = genreCreateDto.Name };
 }

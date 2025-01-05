@@ -6,7 +6,9 @@ public class User
     public string Username { get; set; }
     public string Email { get; set; }
     public string PasswordHash { get; set; }
-    public string UserType { get; set; }
 
-    public ICollection<Ticket> Tickets { get; set; }
+    public int UserRoleId { get; set; }
+    public UserRole UserRole { get; set; }
+
+    public ICollection<Ticket> Tickets { get; set; } = [];
 }

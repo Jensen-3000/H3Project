@@ -18,66 +18,63 @@ public class CinemaController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCinemas()
+    public async Task<IActionResult> GetAllCinemas()
     {
-        var cinemaDtos = await _context.Cinemas
+        var cinemaModels = await _context.Cinemas
             .AsNoTracking()
-            .Select(c => new CinemaDto(c.Id, c.Name, c.Address))
             .ToListAsync();
+
+        var cinemaDtos = cinemaModels.Select(MapModelToReadDto).ToList();
 
         return Ok(cinemaDtos);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetCinema(int id)
+    public async Task<IActionResult> GetCinemaById(int id)
     {
-        var cinemaDto = await _context.Cinemas
+        var cinemaModel = await _context.Cinemas
             .AsNoTracking()
-            .Where(c => c.Id == id)
-            .Select(c => new CinemaDto(c.Id, c.Name, c.Address))
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(c => c.Id == id);
 
-        if (cinemaDto == null)
+        if (cinemaModel == null)
         {
             return NotFound();
         }
+
+        var cinemaDto = MapModelToReadDto(cinemaModel);
 
         return Ok(cinemaDto);
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostCinema(CinemaDto cinemaDto)
+    public async Task<IActionResult> CreateCinema(CinemaCreateDto cinemaCreateDto)
     {
-        var cinema = new Cinema
-        {
-            Name = cinemaDto.Name,
-            Address = cinemaDto.Address
-        };
+        var cinemaModel = MapCreateDtoToModel(cinemaCreateDto);
 
-        _context.Cinemas.Add(cinema);
+        _context.Cinemas.Add(cinemaModel);
         await _context.SaveChangesAsync();
 
-        var newCinemaDto = new CinemaDto(cinema.Id, cinema.Name, cinema.Address);
+        var newCinemaDto = MapModelToReadDto(cinemaModel);
 
-        return CreatedAtAction(nameof(GetCinema), new { id = newCinemaDto.Id }, newCinemaDto);
+        return CreatedAtAction(nameof(GetCinemaById), new { id = newCinemaDto.Id }, newCinemaDto);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> PutCinema(int id, CinemaDto cinemaDto)
+    public async Task<IActionResult> UpdateCinema(int id, CinemaUpdateDto cinemaUpdateDto)
     {
-        if (id != cinemaDto.Id)
+        if (id != cinemaUpdateDto.Id)
         {
             return BadRequest();
         }
 
-        var cinema = await _context.Cinemas.FindAsync(id);
-        if (cinema == null)
+        var cinemaModel = await _context.Cinemas.FindAsync(id);
+        if (cinemaModel == null)
         {
             return NotFound();
         }
 
-        cinema.Name = cinemaDto.Name;
-        cinema.Address = cinemaDto.Address;
+        cinemaModel.Name = cinemaUpdateDto.Name;
+        cinemaModel.Address = cinemaUpdateDto.Address;
 
         await _context.SaveChangesAsync();
 
@@ -87,15 +84,23 @@ public class CinemaController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteCinema(int id)
     {
-        var cinema = await _context.Cinemas.FindAsync(id);
-        if (cinema == null)
+        var cinemaModel = await _context.Cinemas.FindAsync(id);
+        if (cinemaModel == null)
         {
             return NotFound();
         }
 
-        _context.Cinemas.Remove(cinema);
+        _context.Cinemas.Remove(cinemaModel);
         await _context.SaveChangesAsync();
 
         return NoContent();
     }
+
+    private static CinemaReadDto MapModelToReadDto(Cinema cinema) => new(cinema.Id, cinema.Name, cinema.Address);
+
+    private static Cinema MapCreateDtoToModel(CinemaCreateDto cinemaCreateDto) => new()
+    {
+        Name = cinemaCreateDto.Name,
+        Address = cinemaCreateDto.Address
+    };
 }

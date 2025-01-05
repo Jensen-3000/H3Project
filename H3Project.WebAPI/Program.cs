@@ -1,6 +1,5 @@
 using H3Project.Data.Context;
-using H3Project.Data.Repository;
-using H3Project.Data.Repository.Interfaces;
+using H3Project.Data.Mappings;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -31,6 +30,9 @@ builder.Services.AddScoped<IAppDbContext, AppDbContext>();
 var conn = builder.Configuration.GetConnectionString("LocalDbCinema");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(conn));
+
+// AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace H3Project.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241204171634_Init")]
+    [Migration("20250105202306_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -255,7 +255,7 @@ namespace H3Project.Data.Migrations
 
                     b.Property<string>("Row")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("TheaterId")
                         .HasColumnType("int");
@@ -263,6 +263,9 @@ namespace H3Project.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("TheaterId");
+
+                    b.HasIndex("Row", "Number", "TheaterId")
+                        .IsUnique();
 
                     b.ToTable("Seats");
 
@@ -385,7 +388,7 @@ namespace H3Project.Data.Migrations
                             PurchaseDate = new DateTime(2024, 1, 15, 14, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduleId = 1,
                             SeatId = 1,
-                            UserId = 1
+                            UserId = 2
                         },
                         new
                         {
@@ -394,7 +397,16 @@ namespace H3Project.Data.Migrations
                             PurchaseDate = new DateTime(2024, 2, 10, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduleId = 2,
                             SeatId = 3,
-                            UserId = 2
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Price = 8.50m,
+                            PurchaseDate = new DateTime(2024, 2, 10, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            ScheduleId = 2,
+                            SeatId = 4,
+                            UserId = 3
                         });
                 });
 
@@ -414,15 +426,19 @@ namespace H3Project.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("UserRoleId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserRoleId");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users");
 
@@ -432,7 +448,7 @@ namespace H3Project.Data.Migrations
                             Id = 1,
                             Email = "john@example.com",
                             PasswordHash = "hashed_password_1",
-                            UserType = "Customer",
+                            UserRoleId = 1,
                             Username = "john_doe"
                         },
                         new
@@ -440,8 +456,45 @@ namespace H3Project.Data.Migrations
                             Id = 2,
                             Email = "jane@example.com",
                             PasswordHash = "hashed_password_2",
-                            UserType = "Admin",
+                            UserRoleId = 2,
                             Username = "jane_smith"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "alice@example.com",
+                            PasswordHash = "hashed_password_3",
+                            UserRoleId = 2,
+                            Username = "alice_jones"
+                        });
+                });
+
+            modelBuilder.Entity("H3Project.Data.Models.UserRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Role = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Role = "Customer"
                         });
                 });
 
@@ -526,6 +579,17 @@ namespace H3Project.Data.Migrations
                     b.Navigation("Seat");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("H3Project.Data.Models.User", b =>
+                {
+                    b.HasOne("H3Project.Data.Models.UserRole", "UserRole")
+                        .WithMany()
+                        .HasForeignKey("UserRoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserRole");
                 });
 
             modelBuilder.Entity("H3Project.Data.Models.Cinema", b =>

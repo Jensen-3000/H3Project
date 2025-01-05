@@ -16,8 +16,9 @@ public class AppDbContext : DbContext, IAppDbContext
     public DbSet<Theater> Theaters { get; set; }
     public DbSet<Ticket> Tickets { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<UserRole> UserRoles { get; set; }
 
-    public AppDbContext(DbContextOptions options) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
         _options = options;
     }
@@ -38,6 +39,16 @@ public class AppDbContext : DbContext, IAppDbContext
             .WithMany()
             .HasForeignKey(t => t.SeatId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // Username is Unique
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
+
+        // Seat and row is unique in a theater
+        modelBuilder.Entity<Seat>()
+            .HasIndex(s => new { s.Row, s.Number, s.TheaterId })
+            .IsUnique();
 
         // Seed data 
         modelBuilder.SeedData();
