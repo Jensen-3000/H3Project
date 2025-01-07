@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>{{ data.id ? "Edit" : "Add" }} Genre</h2>
+<mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="data.name" />
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data" color="primary">Save</button>
+</mat-dialog-actions>
