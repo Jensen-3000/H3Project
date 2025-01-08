@@ -3,6 +3,7 @@ using H3Project.Data.Context;
 using H3Project.Data.DTOs.Users;
 using H3Project.Data.Models;
 using H3Project.Data.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,7 @@ public class UsersController : ControllerBase
 
     // GET: api/Users
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<UserReadDtoSimple>>> GetUsers()
     {
         var users = await _context.Users
@@ -34,6 +36,7 @@ public class UsersController : ControllerBase
 
     // GET: api/Users/5
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<UserReadDtoSimple>> GetUser(int id)
     {
         var user = await _context.Users
