@@ -71,7 +71,7 @@ builder.Services.AddAuthorizationBuilder()
     .AddPolicy("Customer", authBuilder => { authBuilder.RequireRole("Customer"); });
 
 
-// Services
+// Services and Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
@@ -92,6 +92,9 @@ builder.Services.AddScoped<ISeatService, SeatService>();
 
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<ITicketService, TicketService>();
+
+builder.Services.AddScoped<ITheaterRepository, TheaterRepository>();
+builder.Services.AddScoped<ITheaterService, TheaterService>();
 
 var app = builder.Build();
 
