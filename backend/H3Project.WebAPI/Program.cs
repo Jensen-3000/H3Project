@@ -1,6 +1,10 @@
 using H3Project.Data.Context;
 using H3Project.Data.Mappings;
 using H3Project.Data.Models;
+using H3Project.Data.Repository.Interfaces;
+using H3Project.Data.Repository;
+using H3Project.Data.Services.Interfaces;
+using H3Project.Data.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -65,6 +69,11 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("Admin", authBuilder => { authBuilder.RequireRole("Admin"); })
     .AddPolicy("Customer", authBuilder => { authBuilder.RequireRole("Customer"); });
+
+
+// Services
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
