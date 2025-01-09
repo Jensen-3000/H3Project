@@ -78,6 +78,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICinemaRepository, CinemaRepository>();
 builder.Services.AddScoped<ICinemaService, CinemaService>();
 
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+builder.Services.AddScoped<IGenreService, GenreService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
