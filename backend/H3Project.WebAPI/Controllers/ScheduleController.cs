@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using H3Project.Data.Context;
-using H3Project.Data.DTOs.Schedules;
-using H3Project.Data.Models;
+﻿using H3Project.Data.DTOs.Schedules;
+using H3Project.Data.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace H3Project.WebAPI.Controllers;
 
@@ -11,105 +8,54 @@ namespace H3Project.WebAPI.Controllers;
 [ApiController]
 public class ScheduleController : ControllerBase
 {
-    private readonly IAppDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly IScheduleService _scheduleService;
 
-    public ScheduleController(IAppDbContext context, IMapper mapper)
+    public ScheduleController(IScheduleService scheduleService)
     {
-        _context = context;
-        _mapper = mapper;
+        _scheduleService = scheduleService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllSchedules()
     {
-        var scheduleModels = await _context.Schedules
-            .Include(s => s.Movie)
-            .Include(s => s.Theater)
-            .AsNoTracking()
-            .ToListAsync();
-
-        var scheduleDtos = _mapper.Map<List<ScheduleReadDto>>(scheduleModels);
-
-        return Ok(scheduleDtos);
+        var schedules = await _scheduleService.GetAllSchedulesAsync();
+        return Ok(schedules);
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetScheduleById(int id)
     {
-        var scheduleModel = await _context.Schedules
-            .Include(s => s.Movie)
-            .Include(s => s.Theater)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == id);
-
-        if (scheduleModel == null)
+        var schedule = await _scheduleService.GetScheduleByIdAsync(id);
+        if (schedule == null)
         {
             return NotFound();
         }
 
-        var scheduleDto = _mapper.Map<ScheduleReadDto>(scheduleModel);
-
-        return Ok(scheduleDto);
+        return Ok(schedule);
     }
 
     [HttpGet("movie/{movieId}/cinema/{cinemaId}")]
     public async Task<IActionResult> GetShowtimes(int movieId, int cinemaId)
     {
-        var showtimes = await _context.Schedules
-            .Where(s => s.MovieId == movieId && s.Theater.CinemaId == cinemaId)
-            .Select(s => new ScheduleReadDto
-            {
-                Id = s.Id,
-                TheaterId = s.TheaterId,
-                TheaterName = s.Theater.Name,
-                MovieId = s.MovieId,
-                MovieTitle = s.Movie.Title,
-                ShowTime = s.ShowTime,
-                EndTime = s.EndTime
-            })
-            .ToListAsync();
-
+        var showtimes = await _scheduleService.GetShowtimesAsync(movieId, cinemaId);
         return Ok(showtimes);
     }
-
 
     [HttpPost]
     public async Task<IActionResult> CreateSchedule(ScheduleCreateDto scheduleCreateDto)
     {
-        var scheduleModel = _mapper.Map<Schedule>(scheduleCreateDto);
-
-        _context.Schedules.Add(scheduleModel);
-        await _context.SaveChangesAsync();
-
-        var newScheduleModel = await _context.Schedules
-            .Include(s => s.Movie)
-            .Include(s => s.Theater)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == scheduleModel.Id);
-
-        var scheduleReadDto = _mapper.Map<ScheduleReadDto>(newScheduleModel);
-
-        return CreatedAtAction(nameof(GetScheduleById), new { id = scheduleReadDto.Id }, scheduleReadDto);
+        var newSchedule = await _scheduleService.CreateScheduleAsync(scheduleCreateDto);
+        return CreatedAtAction(nameof(GetScheduleById), new { id = newSchedule.Id }, newSchedule);
     }
 
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateSchedule(int id, ScheduleUpdateDto scheduleUpdateDto)
     {
-        if (id != scheduleUpdateDto.Id)
+        var result = await _scheduleService.UpdateScheduleAsync(id, scheduleUpdateDto);
+        if (!result)
         {
             return BadRequest();
         }
-
-        var scheduleModel = await _context.Schedules.FindAsync(id);
-        if (scheduleModel == null)
-        {
-            return NotFound();
-        }
-
-        _mapper.Map(scheduleUpdateDto, scheduleModel);
-
-        await _context.SaveChangesAsync();
 
         return NoContent();
     }
@@ -117,14 +63,11 @@ public class ScheduleController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteSchedule(int id)
     {
-        var scheduleModel = await _context.Schedules.FindAsync(id);
-        if (scheduleModel == null)
+        var result = await _scheduleService.DeleteScheduleAsync(id);
+        if (!result)
         {
             return NotFound();
         }
-
-        _context.Schedules.Remove(scheduleModel);
-        await _context.SaveChangesAsync();
 
         return NoContent();
     }
