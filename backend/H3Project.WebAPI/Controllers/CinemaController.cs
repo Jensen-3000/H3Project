@@ -1,8 +1,6 @@
-using H3Project.Data.Context;
 using H3Project.Data.DTOs.Cinemas;
-using H3Project.Data.Models;
+using H3Project.Data.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace H3Project.WebAPI.Controllers;
 
@@ -10,71 +8,47 @@ namespace H3Project.WebAPI.Controllers;
 [ApiController]
 public class CinemaController : ControllerBase
 {
-    private readonly IAppDbContext _context;
+    private readonly ICinemaService _cinemaService;
 
-    public CinemaController(IAppDbContext context)
+    public CinemaController(ICinemaService cinemaService)
     {
-        _context = context;
+        _cinemaService = cinemaService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllCinemas()
     {
-        var cinemaModels = await _context.Cinemas
-            .AsNoTracking()
-            .ToListAsync();
-
-        var cinemaDtos = cinemaModels.Select(MapModelToReadDto).ToList();
-
-        return Ok(cinemaDtos);
+        var cinemas = await _cinemaService.GetAllCinemasAsync();
+        return Ok(cinemas);
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetCinemaById(int id)
     {
-        var cinemaModel = await _context.Cinemas
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == id);
-
-        if (cinemaModel == null)
+        var cinema = await _cinemaService.GetCinemaByIdAsync(id);
+        if (cinema == null)
         {
             return NotFound();
         }
-
-        var cinemaDto = MapModelToReadDto(cinemaModel);
-
-        return Ok(cinemaDto);
+        return Ok(cinema);
     }
 
     [HttpGet("movie/{movieId:int}")]
     public async Task<IActionResult> GetCinemasByMovie(int movieId)
     {
-        var cinemas = await _context.Schedules
-            .Where(s => s.MovieId == movieId)
-            .Select(s => s.Theater.Cinema)
-            .Distinct()
-            .Select(c => new CinemaReadDto(c.Id, c.Name, c.Address))
-            .ToListAsync();
-
+        var cinemas = await _cinemaService.GetCinemasByMovieAsync(movieId);
         if (!cinemas.Any())
         {
             return NotFound($"No cinemas found showing movie with ID {movieId}");
         }
-
         return Ok(cinemas);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateCinema(CinemaCreateDto cinemaCreateDto)
     {
-        var cinemaModel = MapCreateDtoToModel(cinemaCreateDto);
-
-        _context.Cinemas.Add(cinemaModel);
-        await _context.SaveChangesAsync();
-
-        var newCinemaDto = MapModelToReadDto(cinemaModel);
-
-        return CreatedAtAction(nameof(GetCinemaById), new { id = newCinemaDto.Id }, newCinemaDto);
+        var newCinema = await _cinemaService.CreateCinemaAsync(cinemaCreateDto);
+        return CreatedAtAction(nameof(GetCinemaById), new { id = newCinema.Id }, newCinema);
     }
 
     [HttpPut("{id:int}")]
@@ -85,40 +59,14 @@ public class CinemaController : ControllerBase
             return BadRequest();
         }
 
-        var cinemaModel = await _context.Cinemas.FindAsync(id);
-        if (cinemaModel == null)
-        {
-            return NotFound();
-        }
-
-        cinemaModel.Name = cinemaUpdateDto.Name;
-        cinemaModel.Address = cinemaUpdateDto.Address;
-
-        await _context.SaveChangesAsync();
-
+        await _cinemaService.UpdateCinemaAsync(cinemaUpdateDto);
         return NoContent();
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteCinema(int id)
     {
-        var cinemaModel = await _context.Cinemas.FindAsync(id);
-        if (cinemaModel == null)
-        {
-            return NotFound();
-        }
-
-        _context.Cinemas.Remove(cinemaModel);
-        await _context.SaveChangesAsync();
-
+        await _cinemaService.DeleteCinemaAsync(id);
         return NoContent();
     }
-
-    private static CinemaReadDto MapModelToReadDto(Cinema cinema) => new(cinema.Id, cinema.Name, cinema.Address);
-
-    private static Cinema MapCreateDtoToModel(CinemaCreateDto cinemaCreateDto) => new()
-    {
-        Name = cinemaCreateDto.Name,
-        Address = cinemaCreateDto.Address
-    };
 }

@@ -75,6 +75,9 @@ builder.Services.AddAuthorizationBuilder()
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+builder.Services.AddScoped<ICinemaRepository, CinemaRepository>();
+builder.Services.AddScoped<ICinemaService, CinemaService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
