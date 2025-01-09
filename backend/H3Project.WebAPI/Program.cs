@@ -72,7 +72,6 @@ builder.Services.AddAuthorizationBuilder()
 
 
 // Services and Repositories
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<ICinemaRepository, CinemaRepository>();
@@ -95,6 +94,9 @@ builder.Services.AddScoped<ITicketService, TicketService>();
 
 builder.Services.AddScoped<ITheaterRepository, TheaterRepository>();
 builder.Services.AddScoped<ITheaterService, TheaterService>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

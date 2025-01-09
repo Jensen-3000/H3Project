@@ -1,11 +1,7 @@
-﻿using AutoMapper;
-using H3Project.Data.Context;
-using H3Project.Data.DTOs.Users;
-using H3Project.Data.Models;
-using H3Project.Data.Utilities;
+﻿using H3Project.Data.DTOs.Users;
+using H3Project.Data.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace H3Project.WebAPI.Controllers;
 
@@ -13,140 +9,76 @@ namespace H3Project.WebAPI.Controllers;
 [ApiController]
 public class UsersController : ControllerBase
 {
-    private readonly AppDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly IUserService _userService;
 
-    public UsersController(AppDbContext context, IMapper mapper)
+    public UsersController(IUserService userService)
     {
-        _context = context;
-        _mapper = mapper;
+        _userService = userService;
     }
 
-    // GET: api/Users
     [HttpGet]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<UserReadDtoSimple>>> GetUsers()
     {
-        var users = await _context.Users
-            .Include(u => u.UserRole)
-            .ToListAsync();
-
-        return Ok(_mapper.Map<List<UserReadDtoSimple>>(users));
+        var users = await _userService.GetAllUsersAsync();
+        return Ok(users);
     }
 
-    // GET: api/Users/5
     [HttpGet("{id}")]
     [Authorize(Roles = "Customer")]
     public async Task<ActionResult<UserReadDtoSimple>> GetUser(int id)
     {
-        var user = await _context.Users
-            .Include(u => u.UserRole)
-            .FirstOrDefaultAsync(u => u.Id == id);
-
+        var user = await _userService.GetUserAsync(id);
         if (user == null)
         {
             return NotFound();
         }
-
-        return Ok(_mapper.Map<UserReadDtoSimple>(user));
+        return Ok(user);
     }
 
-    // GET: api/Users/5/tickets
     [HttpGet("{id}/tickets")]
     public async Task<ActionResult<UserReadDto>> GetUserWithTickets(int id)
     {
-        var user = await _context.Users
-            .Include(u => u.UserRole)
-            .Include(u => u.Tickets)
-                .ThenInclude(t => t.Schedule)
-                .ThenInclude(s => s.Movie)
-            .Include(u => u.Tickets)
-                .ThenInclude(t => t.Schedule)
-                .ThenInclude(s => s.Theater)
-            .Include(u => u.Tickets)
-                .ThenInclude(t => t.Seat)
-            .FirstOrDefaultAsync(u => u.Id == id);
-
+        var user = await _userService.GetUserWithTicketsAsync(id);
         if (user == null)
         {
             return NotFound();
         }
-
-        return Ok(_mapper.Map<UserReadDto>(user));
+        return Ok(user);
     }
 
-    // PUT: api/Users/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutUser(int id, [FromBody] UserUpdateDto userDto)
+    public async Task<IActionResult> PutUser(int id, UserUpdateDto userDto)
     {
-        var user = await _context.Users.FindAsync(id);
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        _mapper.Map(userDto, user);
-
         try
         {
-            await _context.SaveChangesAsync();
+            await _userService.UpdateUserAsync(id, userDto);
+            return NoContent();
         }
-        catch (DbUpdateConcurrencyException)
+        catch (KeyNotFoundException)
         {
-            if (!UserExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
+            return NotFound();
         }
-
-        return NoContent();
     }
 
-    // POST: api/Users
     [HttpPost]
     public async Task<ActionResult<UserReadDto>> PostUser(UserCreateDto userDto)
     {
-        if (await _context.Users.AnyAsync(u => u.Username == userDto.Username))
+        try
         {
-            return BadRequest("Username is taken.");
+            var user = await _userService.CreateUserAsync(userDto);
+            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
         }
-
-        var user = _mapper.Map<User>(userDto);
-
-        user.PasswordHash = PasswordHasher.HashPassword(userDto.PasswordHash);
-
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-
-        var createdUser = await _context.Users
-            .Include(u => u.UserRole)
-            .FirstOrDefaultAsync(u => u.Id == user.Id);
-
-        return CreatedAtAction(nameof(GetUser), new { id = user.Id }, _mapper.Map<UserReadDto>(createdUser));
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
-    // DELETE: api/Users/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        var user = await _context.Users.FindAsync(id);
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
-
+        await _userService.DeleteUserAsync(id);
         return NoContent();
-    }
-
-    private bool UserExists(int id)
-    {
-        return _context.Users.Any(e => e.Id == id);
     }
 }
