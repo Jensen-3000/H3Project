@@ -1,4 +1,4 @@
-﻿namespace H3Project.Data.Utilities;
+﻿namespace H3Project.Data.Models;
 
 public class JwtSettings
 {

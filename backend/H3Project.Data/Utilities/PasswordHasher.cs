@@ -11,4 +11,10 @@ public static class PasswordHasher
         var hash = SHA256.HashData(bytes);
         return Convert.ToBase64String(hash);
     }
+
+    public static bool VerifyPassword(string inputPassword, string storedHash)
+    {
+        var inputHash = HashPassword(inputPassword);
+        return inputHash == storedHash;
+    }
 }

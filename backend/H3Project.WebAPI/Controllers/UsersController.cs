@@ -36,7 +36,7 @@ public class UsersController : ControllerBase
 
     // GET: api/Users/5
     [HttpGet("{id}")]
-    [Authorize]
+    [Authorize(Roles = "Customer")]
     public async Task<ActionResult<UserReadDtoSimple>> GetUser(int id)
     {
         var user = await _context.Users

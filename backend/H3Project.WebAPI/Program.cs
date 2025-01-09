@@ -1,11 +1,11 @@
-using System.Text;
 using H3Project.Data.Context;
 using H3Project.Data.Mappings;
-using H3Project.Data.Utilities;
+using H3Project.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,11 +60,10 @@ builder.Services.AddAuthentication(options =>
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("Admin",
-        authBuilder => { authBuilder.RequireRole("Admin"); });
-});
+// Authorization policies
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("Admin", authBuilder => { authBuilder.RequireRole("Admin"); })
+    .AddPolicy("Customer", authBuilder => { authBuilder.RequireRole("Customer"); });
 
 var app = builder.Build();
 
