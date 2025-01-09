@@ -1,5 +1,9 @@
-﻿using H3Project.Data.DTOs.Theaters;
+﻿using H3Project.Data.DTOs.Seats;
+using H3Project.Data.DTOs.Theaters;
+using H3Project.Data.Models;
+using H3Project.Data.Services;
 using H3Project.Data.Services.Interfaces;
+using H3Project.Data.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace H3Project.WebAPI.Controllers;
@@ -9,10 +13,12 @@ namespace H3Project.WebAPI.Controllers;
 public class TheatersController : ControllerBase
 {
     private readonly ITheaterService _theaterService;
+    private readonly ISeatService _seatService;
 
-    public TheatersController(ITheaterService theaterService)
+    public TheatersController(ITheaterService theaterService, ISeatService seatService)
     {
         _theaterService = theaterService;
+        _seatService = seatService;
     }
 
     [HttpGet]
@@ -63,5 +69,12 @@ public class TheatersController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpPost("{id}/seats")]
+    public async Task<ActionResult<IEnumerable<Seat>>> GenerateSeats(int id, [FromBody] SeatGenerationRequestDto request)
+    {
+        var seats = await _seatService.GenerateSeatsAsync(id, request);
+        return Ok(seats);
     }
 }

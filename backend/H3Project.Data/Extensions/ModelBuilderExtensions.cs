@@ -1,30 +1,11 @@
 ﻿using H3Project.Data.Models;
+using H3Project.Data.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace H3Project.Data.Extensions;
 
 public static class ModelBuilderExtensions
 {
-    private static List<Seat> GenerateTheaterSeats(int theaterId, int startId, int rows, int seatsPerRow)
-    {
-        var seats = new List<Seat>();
-        var rowLetters = "ABCDEFGHIJKL".ToCharArray();
-        var currentId = startId;
-
-        for (var row = 0; row < rows; row++)
-        for (var seatNum = 1; seatNum <= seatsPerRow; seatNum++)
-            seats.Add(new Seat
-            {
-                Id = currentId++,
-                Row = rowLetters[row].ToString(),
-                Number = seatNum,
-                IsAvailable = true,
-                TheaterId = theaterId
-            });
-
-        return seats;
-    }
-
     public static void SeedData(this ModelBuilder modelBuilder)
     {
         // Seed Cinemas
@@ -51,31 +32,31 @@ public static class ModelBuilderExtensions
         modelBuilder.Entity<Movie>().HasData(
             new Movie
             {
-                Id = 1, 
+                Id = 1,
                 Title = "Fast & Furious 10",
                 Slug = "fast-and-furious-10",
                 Description = "High-speed action",
-                ReleaseDate = new DateOnly(2024, 1, 15), 
+                ReleaseDate = new DateOnly(2024, 1, 15),
                 Duration = new TimeSpan(2, 30, 0),
                 ImageUrl = "https://placehold.co/400x600?text=Fast+And+Furious+10"
             },
             new Movie
             {
-                Id = 2, 
+                Id = 2,
                 Title = "Laugh Out Loud",
                 Slug = "laugh-out-loud",
                 Description = "Hilarious comedy",
-                ReleaseDate = new DateOnly(2024, 2, 10), 
+                ReleaseDate = new DateOnly(2024, 2, 10),
                 Duration = new TimeSpan(1, 45, 0),
                 ImageUrl = "https://placehold.co/400x600?text=Laugh+Out+Loud"
             },
             new Movie
             {
-                Id = 3, 
-                Title = "Deep Emotions", 
+                Id = 3,
+                Title = "Deep Emotions",
                 Slug = "deep-emotions",
                 Description = "Heartfelt drama",
-                ReleaseDate = new DateOnly(2024, 3, 5), 
+                ReleaseDate = new DateOnly(2024, 3, 5),
                 Duration = new TimeSpan(2, 10, 0),
                 ImageUrl = "https://placehold.co/400x600?text=Deep+Emotions"
             }
@@ -125,9 +106,9 @@ public static class ModelBuilderExtensions
 
         // Generate seats for all theaters
         var allSeats = new List<Seat>();
-        allSeats.AddRange(GenerateTheaterSeats(1, 1, 8, 12)); // Theater 1: 8 rows, 12 seats each
-        allSeats.AddRange(GenerateTheaterSeats(2, 97, 6, 10)); // Theater 2: 6 rows, 10 seats each
-        allSeats.AddRange(GenerateTheaterSeats(3, 157, 5, 8)); // Theater 3: 5 rows, 8 seats each
+        allSeats.AddRange(SeatGenerator.GenerateTheaterSeats(1, 1, 8, 12)); // Theater 1: 8 rows, 12 seats each
+        allSeats.AddRange(SeatGenerator.GenerateTheaterSeats(2, 97, 6, 10)); // Theater 2: 6 rows, 10 seats each
+        allSeats.AddRange(SeatGenerator.GenerateTheaterSeats(3, 157, 5, 8)); // Theater 3: 5 rows, 8 seats each
 
         modelBuilder.Entity<Seat>().HasData(allSeats);
 
@@ -144,12 +125,18 @@ public static class ModelBuilderExtensions
             },
             new User
             {
-                Id = 2, Username = "jane_smith", Email = "jane@example.com", PasswordHash = "hashed_password_2",
+                Id = 2,
+                Username = "jane_smith",
+                Email = "jane@example.com",
+                PasswordHash = "hashed_password_2",
                 UserRoleId = 2
             },
             new User
             {
-                Id = 3, Username = "alice_jones", Email = "alice@example.com", PasswordHash = "hashed_password_3",
+                Id = 3,
+                Username = "alice_jones",
+                Email = "alice@example.com",
+                PasswordHash = "hashed_password_3",
                 UserRoleId = 2
             }
         );

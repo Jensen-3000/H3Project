@@ -4,6 +4,7 @@ using H3Project.Data.DTOs.Theaters;
 using H3Project.Data.Models;
 using H3Project.Data.Repository.Interfaces;
 using H3Project.Data.Services.Interfaces;
+using H3Project.Data.Utilities;
 using Microsoft.Extensions.Logging;
 
 namespace H3Project.Data.Services;
@@ -183,5 +184,11 @@ public class SeatService : ISeatService
 
         await _seatRepository.DeleteSeatAsync(seat);
         return true;
+    }
+
+    public Task<List<Seat>> GenerateSeatsAsync(int theaterId, SeatGenerationRequestDto request)
+    {
+        var seats = SeatGenerator.GenerateTheaterSeats(theaterId, request.StartId, request.Rows, request.SeatsPerRow);
+        return Task.FromResult(seats);
     }
 }
