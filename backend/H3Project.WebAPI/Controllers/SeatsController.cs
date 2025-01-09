@@ -2,8 +2,12 @@
 using H3Project.Data.Context;
 using H3Project.Data.DTOs.Seats;
 using H3Project.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.IdentityModel.JsonWebTokens;
+using H3Project.Data.DTOs.Theaters;
 
 namespace H3Project.WebAPI.Controllers;
 
@@ -13,11 +17,13 @@ public class SeatsController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ILogger<SeatsController> _logger;
 
-    public SeatsController(AppDbContext context, IMapper mapper)
+    public SeatsController(AppDbContext context, IMapper mapper, ILogger<SeatsController> logger)
     {
         _context = context;
         _mapper = mapper;
+        _logger = logger;
     }
 
     // GET: api/Seats
@@ -40,6 +46,75 @@ public class SeatsController : ControllerBase
         }
 
         return _mapper.Map<SeatReadDto>(seat);
+    }
+
+    [HttpGet("theater/{theaterId}")]
+    public IActionResult GetSeatsByTheater(int theaterId)
+    {
+        // Get seats for specific theater
+        var seats = _context.Seats
+            .Where(s => s.TheaterId == theaterId)
+            .OrderBy(s => s.Row)
+            .ThenBy(s => s.Number)
+            .ToList();
+
+        var seatLayout = seats
+            .GroupBy(s => s.Row)
+            .OrderBy(g => g.Key)
+            .Select(g => new
+            {
+                Row = g.Key,
+                Seats = g.OrderBy(s => s.Number).ToList()
+            })
+            .ToList();
+
+        return Ok(seatLayout);
+    }
+
+    [HttpGet("showtime/{showtimeId}/layout")]
+    public async Task<ActionResult<TheaterLayoutDto>> GetTheaterLayout(int showtimeId)
+    {
+        // Load schedule and theater with seats
+        var schedule = await _context.Schedules
+            .Include(s => s.Theater)
+            .FirstOrDefaultAsync(s => s.Id == showtimeId);
+
+        if (schedule == null)
+            return NotFound();
+
+        // Load all seats for theater
+        var seats = await _context.Seats
+            .Where(s => s.TheaterId == schedule.TheaterId)
+            .OrderBy(s => s.Row)
+            .ThenBy(s => s.Number)
+            .ToListAsync();
+
+        // Load occupied seats for this schedule
+        var occupiedSeatIds = await _context.Tickets
+            .Where(t => t.ScheduleId == showtimeId)
+            .Select(t => t.SeatId)
+            .ToHashSetAsync();
+
+        var seatsPerRow = seats
+            .GroupBy(s => s.Row)
+            .Max(g => g.Count());
+
+        var seatDtos = seats.Select(s => new SeatDto
+        {
+            Id = s.Id,
+            Row = s.Row,
+            Number = s.Number,
+            Status = !s.IsAvailable ? "disabled" :
+                occupiedSeatIds.Contains(s.Id) ? "occupied" :
+                "available",
+            Price = schedule.BasePrice
+        });
+
+        return Ok(new TheaterLayoutDto
+        {
+            SeatsPerRow = seatsPerRow,
+            Seats = seatDtos
+        });
     }
 
     // PUT: api/Seats/5
@@ -71,6 +146,102 @@ public class SeatsController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [Authorize]
+    [HttpPost("reserve")]
+    public async Task<ActionResult<bool>> ReserveSeats([FromBody] SeatReservationDto reservation)
+    {
+        try
+        {
+            // Get username from claims
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(username))
+            {
+                _logger.LogWarning("No username claim found in token");
+                return Unauthorized();
+            }
+
+            // Verify user exists by username
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user == null)
+            {
+                _logger.LogWarning("User not found for username: {Username}", username);
+                return Unauthorized();
+            }
+
+            // Get schedule
+            var schedule = await _context.Schedules
+                .FirstOrDefaultAsync(s => s.Id == reservation.ShowtimeId);
+
+            if (schedule == null)
+            {
+                _logger.LogWarning("Schedule not found: {ShowtimeId}", reservation.ShowtimeId);
+                return NotFound("Schedule not found");
+            }
+
+            // Check seats
+            var requestedSeats = await _context.Seats
+                .Where(s => reservation.SeatIds.Contains(s.Id))
+                .ToListAsync();
+
+            if (requestedSeats.Count != reservation.SeatIds.Count)
+            {
+                _logger.LogWarning("Not all requested seats were found");
+                return BadRequest("One or more seats not found");
+            }
+
+            if (requestedSeats.Any(s => !s.IsAvailable))
+            {
+                _logger.LogWarning("Some seats are not available");
+                return BadRequest("One or more seats are not available");
+            }
+
+            // Check existing tickets
+            var existingTickets = await _context.Tickets
+                .AnyAsync(t => t.ScheduleId == reservation.ShowtimeId &&
+                              reservation.SeatIds.Contains(t.SeatId));
+
+            if (existingTickets)
+            {
+                _logger.LogWarning("Some seats are already reserved");
+                return BadRequest("One or more seats are already reserved");
+            }
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var tickets = requestedSeats.Select(seat => new Ticket
+                {
+                    ScheduleId = reservation.ShowtimeId,
+                    SeatId = seat.Id,
+                    UserId = user.Id,
+                    PurchaseDate = DateTime.UtcNow,
+                    Price = schedule.BasePrice
+                });
+
+                _context.Tickets.AddRange(tickets);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                _logger.LogInformation("Successfully reserved {Count} seats for user {Username}",
+                    reservation.SeatIds.Count, username);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Failed to reserve seats for user {Username}", username);
+                return StatusCode(500, "Failed to reserve seats");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error in ReserveSeats");
+            return StatusCode(500, "An unexpected error occurred");
+        }
     }
 
     // POST: api/Seats

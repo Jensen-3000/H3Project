@@ -24,7 +24,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowLocalhost", policy =>
         policy.WithOrigins("http://localhost:4200") // Allow your Angular app
             .AllowAnyMethod()
-            .AllowAnyHeader());
+            .AllowAnyHeader()
+            .AllowCredentials());
 });
 
 // EF DbContext

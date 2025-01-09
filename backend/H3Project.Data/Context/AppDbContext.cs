@@ -1,6 +1,7 @@
 using H3Project.Data.Extensions;
 using H3Project.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace H3Project.Data.Context;
 
@@ -33,6 +34,10 @@ public class AppDbContext : DbContext, IAppDbContext
             .Property(t => t.Price)
             .HasPrecision(pricePrecision.Precision, pricePrecision.Scale);
 
+        modelBuilder.Entity<Schedule>()
+            .Property(s => s.BasePrice)
+            .HasPrecision(pricePrecision.Precision, pricePrecision.Scale);
+
         // Handle FK Cascade Delete for Ticket
         modelBuilder.Entity<Ticket>()
             .HasOne(t => t.Seat)
@@ -53,4 +58,11 @@ public class AppDbContext : DbContext, IAppDbContext
         // Seed data 
         modelBuilder.SeedData();
     }
+
+    // Ignore annoying PendingModelChangesWarning
+
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+    //}
 }

@@ -53,6 +53,27 @@ public class ScheduleController : ControllerBase
         return Ok(scheduleDto);
     }
 
+    [HttpGet("movie/{movieId}/cinema/{cinemaId}")]
+    public async Task<IActionResult> GetShowtimes(int movieId, int cinemaId)
+    {
+        var showtimes = await _context.Schedules
+            .Where(s => s.MovieId == movieId && s.Theater.CinemaId == cinemaId)
+            .Select(s => new ScheduleReadDto
+            {
+                Id = s.Id,
+                TheaterId = s.TheaterId,
+                TheaterName = s.Theater.Name,
+                MovieId = s.MovieId,
+                MovieTitle = s.Movie.Title,
+                ShowTime = s.ShowTime,
+                EndTime = s.EndTime
+            })
+            .ToListAsync();
+
+        return Ok(showtimes);
+    }
+
+
     [HttpPost]
     public async Task<IActionResult> CreateSchedule(ScheduleCreateDto scheduleCreateDto)
     {

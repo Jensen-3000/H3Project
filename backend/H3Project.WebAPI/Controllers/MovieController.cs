@@ -1,5 +1,6 @@
 ﻿using H3Project.Data.Context;
 using H3Project.Data.DTOs.Movies;
+using H3Project.Data.DTOs.Schedules;
 using H3Project.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,17 +19,28 @@ public class MovieController : ControllerBase
     }
 
     [HttpGet]
+    [HttpGet]
     public async Task<IActionResult> GetAllMovies()
     {
-        var movieModels = await _context.Movies
-            .AsNoTracking()
+        var movies = await _context.Movies
             .Include(m => m.Genres)
+            .Select(m => new MovieReadDto
+            {
+                Id = m.Id,
+                Title = m.Title,
+                Slug = m.Slug,
+                Description = m.Description,
+                ImageUrl = m.ImageUrl,
+                ReleaseDate = m.ReleaseDate,
+                Duration = m.Duration,
+                Genres = m.Genres.Select(g => g.Name).ToList()
+            })
             .ToListAsync();
 
-        var movieDtos = movieModels.Select(MapModelToReadDto).ToList();
-
-        return Ok(movieDtos);
+        return Ok(movies);
     }
+
+
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetMovieById(int id)
@@ -46,6 +58,19 @@ public class MovieController : ControllerBase
         var movieDto = MapModelToReadDto(movieModel);
 
         return Ok(movieDto);
+    }
+
+    [HttpGet("{slug}")]
+    public async Task<IActionResult> GetMovieBySlug(string slug)
+    {
+        var movie = await _context.Movies
+            .Include(m => m.Genres)
+            .FirstOrDefaultAsync(m => m.Slug == slug);
+
+        if (movie == null)
+            return NotFound();
+
+        return Ok(MapModelToReadDto(movie));
     }
 
     [HttpPost]
@@ -108,14 +133,32 @@ public class MovieController : ControllerBase
         return NoContent();
     }
 
-    private static MovieReadDto MapModelToReadDto(Movie movie) => new(
-        movie.Id,
-        movie.Title,
-        movie.Description,
-        movie.ReleaseDate,
-        movie.Duration,
-        movie.Genres.Select(g => g.Name).ToList()
-    );
+    private static MovieReadDto MapModelToReadDto(Movie movie)
+    {
+        return new MovieReadDto
+        {
+            Id = movie.Id,
+            Title = movie.Title,
+            Slug = movie.Slug,
+            Description = movie.Description,
+            ImageUrl = movie.ImageUrl,
+            ReleaseDate = movie.ReleaseDate,
+            Duration = movie.Duration,
+            Genres = movie.Genres.Select(g => g.Name).ToList(),
+            CurrentSchedules = movie.Schedules
+                .Select(s => new ScheduleReadDto
+                {
+                    Id = s.Id,
+                    ShowTime = s.ShowTime,
+                    EndTime = s.EndTime,
+                    BasePrice = s.BasePrice,
+                    TheaterId = s.TheaterId,
+                    TheaterName = s.Theater.Name,
+                    MovieId = s.MovieId,
+                    MovieTitle = s.Movie.Title
+                }).ToList()
+        };
+    }
 
     private static Movie MapCreateDtoToModel(MovieCreateDto movieCreateDto, List<Genre> genres) => new()
     {

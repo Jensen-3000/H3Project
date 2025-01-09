@@ -143,8 +143,16 @@ namespace H3Project.Data.Migrations
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateOnly>("ReleaseDate")
                         .HasColumnType("date");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -160,7 +168,9 @@ namespace H3Project.Data.Migrations
                             Id = 1,
                             Description = "High-speed action",
                             Duration = new TimeSpan(0, 2, 30, 0, 0),
+                            ImageUrl = "https://placehold.co/400x600?text=Fast+And+Furious+10",
                             ReleaseDate = new DateOnly(2024, 1, 15),
+                            Slug = "fast-and-furious-10",
                             Title = "Fast & Furious 10"
                         },
                         new
@@ -168,7 +178,9 @@ namespace H3Project.Data.Migrations
                             Id = 2,
                             Description = "Hilarious comedy",
                             Duration = new TimeSpan(0, 1, 45, 0, 0),
+                            ImageUrl = "https://placehold.co/400x600?text=Laugh+Out+Loud",
                             ReleaseDate = new DateOnly(2024, 2, 10),
+                            Slug = "laugh-out-loud",
                             Title = "Laugh Out Loud"
                         },
                         new
@@ -176,7 +188,9 @@ namespace H3Project.Data.Migrations
                             Id = 3,
                             Description = "Heartfelt drama",
                             Duration = new TimeSpan(0, 2, 10, 0, 0),
+                            ImageUrl = "https://placehold.co/400x600?text=Deep+Emotions",
                             ReleaseDate = new DateOnly(2024, 3, 5),
+                            Slug = "deep-emotions",
                             Title = "Deep Emotions"
                         });
                 });
@@ -188,6 +202,10 @@ namespace H3Project.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("BasePrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
@@ -213,6 +231,7 @@ namespace H3Project.Data.Migrations
                         new
                         {
                             Id = 1,
+                            BasePrice = 12.99m,
                             EndTime = new DateTime(2024, 1, 16, 20, 30, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 1,
                             ShowTime = new DateTime(2024, 1, 16, 18, 0, 0, 0, DateTimeKind.Unspecified),
@@ -221,18 +240,20 @@ namespace H3Project.Data.Migrations
                         new
                         {
                             Id = 2,
-                            EndTime = new DateTime(2024, 2, 11, 16, 45, 0, 0, DateTimeKind.Unspecified),
-                            MovieId = 2,
-                            ShowTime = new DateTime(2024, 2, 11, 15, 0, 0, 0, DateTimeKind.Unspecified),
-                            TheaterId = 2
+                            BasePrice = 14.99m,
+                            EndTime = new DateTime(2024, 1, 16, 23, 30, 0, 0, DateTimeKind.Unspecified),
+                            MovieId = 1,
+                            ShowTime = new DateTime(2024, 1, 16, 21, 0, 0, 0, DateTimeKind.Unspecified),
+                            TheaterId = 1
                         },
                         new
                         {
                             Id = 3,
-                            EndTime = new DateTime(2024, 3, 6, 22, 10, 0, 0, DateTimeKind.Unspecified),
-                            MovieId = 3,
-                            ShowTime = new DateTime(2024, 3, 6, 20, 0, 0, 0, DateTimeKind.Unspecified),
-                            TheaterId = 3
+                            BasePrice = 9.99m,
+                            EndTime = new DateTime(2024, 2, 11, 16, 45, 0, 0, DateTimeKind.Unspecified),
+                            MovieId = 2,
+                            ShowTime = new DateTime(2024, 2, 11, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                            TheaterId = 2
                         });
                 });
 
@@ -254,10 +275,15 @@ namespace H3Project.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int?>("ScheduleId")
+                        .HasColumnType("int");
+
                     b.Property<int>("TheaterId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ScheduleId");
 
                     b.HasIndex("TheaterId");
 
@@ -286,17 +312,1553 @@ namespace H3Project.Data.Migrations
                         new
                         {
                             Id = 3,
-                            IsAvailable = false,
+                            IsAvailable = true,
                             Number = 3,
-                            Row = "B",
-                            TheaterId = 2
+                            Row = "A",
+                            TheaterId = 1
                         },
                         new
                         {
                             Id = 4,
                             IsAvailable = true,
                             Number = 4,
+                            Row = "A",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "A",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "A",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "A",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "A",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "A",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "A",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            IsAvailable = true,
+                            Number = 11,
+                            Row = "A",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            IsAvailable = true,
+                            Number = 12,
+                            Row = "A",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "B",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 14,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "B",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "B",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "B",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 17,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "B",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 18,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "B",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 19,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "B",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 20,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "B",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 21,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "B",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 22,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "B",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 23,
+                            IsAvailable = true,
+                            Number = 11,
+                            Row = "B",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 24,
+                            IsAvailable = true,
+                            Number = 12,
+                            Row = "B",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 25,
+                            IsAvailable = true,
+                            Number = 1,
                             Row = "C",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 26,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "C",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 27,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "C",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 28,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "C",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 29,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "C",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 30,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "C",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 31,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "C",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 32,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "C",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 33,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "C",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 34,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "C",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 35,
+                            IsAvailable = true,
+                            Number = 11,
+                            Row = "C",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 36,
+                            IsAvailable = true,
+                            Number = 12,
+                            Row = "C",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 37,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "D",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 38,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "D",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 39,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "D",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 40,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "D",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 41,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "D",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 42,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "D",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 43,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "D",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 44,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "D",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 45,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "D",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 46,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "D",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 47,
+                            IsAvailable = true,
+                            Number = 11,
+                            Row = "D",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 48,
+                            IsAvailable = true,
+                            Number = 12,
+                            Row = "D",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 49,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "E",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 50,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "E",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 51,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "E",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 52,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "E",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 53,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "E",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 54,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "E",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 55,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "E",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 56,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "E",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 57,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "E",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 58,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "E",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 59,
+                            IsAvailable = true,
+                            Number = 11,
+                            Row = "E",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 60,
+                            IsAvailable = true,
+                            Number = 12,
+                            Row = "E",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 61,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "F",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 62,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "F",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 63,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "F",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 64,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "F",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 65,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "F",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 66,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "F",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 67,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "F",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 68,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "F",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 69,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "F",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 70,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "F",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 71,
+                            IsAvailable = true,
+                            Number = 11,
+                            Row = "F",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 72,
+                            IsAvailable = true,
+                            Number = 12,
+                            Row = "F",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 73,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "G",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 74,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "G",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 75,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "G",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 76,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "G",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 77,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "G",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 78,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "G",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 79,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "G",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 80,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "G",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 81,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "G",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 82,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "G",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 83,
+                            IsAvailable = true,
+                            Number = 11,
+                            Row = "G",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 84,
+                            IsAvailable = true,
+                            Number = 12,
+                            Row = "G",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 85,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "H",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 86,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "H",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 87,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "H",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 88,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "H",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 89,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "H",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 90,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "H",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 91,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "H",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 92,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "H",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 93,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "H",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 94,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "H",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 95,
+                            IsAvailable = true,
+                            Number = 11,
+                            Row = "H",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 96,
+                            IsAvailable = true,
+                            Number = 12,
+                            Row = "H",
+                            TheaterId = 1
+                        },
+                        new
+                        {
+                            Id = 97,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "A",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 98,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "A",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 99,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "A",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 100,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "A",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 101,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "A",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 102,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "A",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 103,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "A",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 104,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "A",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 105,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "A",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 106,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "A",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 107,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "B",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 108,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "B",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 109,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "B",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 110,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "B",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 111,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "B",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 112,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "B",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 113,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "B",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 114,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "B",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 115,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "B",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 116,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "B",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 117,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "C",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 118,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "C",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 119,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "C",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 120,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "C",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 121,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "C",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 122,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "C",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 123,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "C",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 124,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "C",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 125,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "C",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 126,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "C",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 127,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "D",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 128,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "D",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 129,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "D",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 130,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "D",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 131,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "D",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 132,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "D",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 133,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "D",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 134,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "D",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 135,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "D",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 136,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "D",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 137,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "E",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 138,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "E",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 139,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "E",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 140,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "E",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 141,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "E",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 142,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "E",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 143,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "E",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 144,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "E",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 145,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "E",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 146,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "E",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 147,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "F",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 148,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "F",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 149,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "F",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 150,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "F",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 151,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "F",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 152,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "F",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 153,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "F",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 154,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "F",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 155,
+                            IsAvailable = true,
+                            Number = 9,
+                            Row = "F",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 156,
+                            IsAvailable = true,
+                            Number = 10,
+                            Row = "F",
+                            TheaterId = 2
+                        },
+                        new
+                        {
+                            Id = 157,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "A",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 158,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "A",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 159,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "A",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 160,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "A",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 161,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "A",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 162,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "A",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 163,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "A",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 164,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "A",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 165,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "B",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 166,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "B",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 167,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "B",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 168,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "B",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 169,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "B",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 170,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "B",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 171,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "B",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 172,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "B",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 173,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "C",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 174,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "C",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 175,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "C",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 176,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "C",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 177,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "C",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 178,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "C",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 179,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "C",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 180,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "C",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 181,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "D",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 182,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "D",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 183,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "D",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 184,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "D",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 185,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "D",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 186,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "D",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 187,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "D",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 188,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "D",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 189,
+                            IsAvailable = true,
+                            Number = 1,
+                            Row = "E",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 190,
+                            IsAvailable = true,
+                            Number = 2,
+                            Row = "E",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 191,
+                            IsAvailable = true,
+                            Number = 3,
+                            Row = "E",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 192,
+                            IsAvailable = true,
+                            Number = 4,
+                            Row = "E",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 193,
+                            IsAvailable = true,
+                            Number = 5,
+                            Row = "E",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 194,
+                            IsAvailable = true,
+                            Number = 6,
+                            Row = "E",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 195,
+                            IsAvailable = true,
+                            Number = 7,
+                            Row = "E",
+                            TheaterId = 3
+                        },
+                        new
+                        {
+                            Id = 196,
+                            IsAvailable = true,
+                            Number = 8,
+                            Row = "E",
                             TheaterId = 3
                         });
                 });
@@ -381,8 +1943,8 @@ namespace H3Project.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Price = 10.99m,
-                            PurchaseDate = new DateTime(2024, 1, 15, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            Price = 12.99m,
+                            PurchaseDate = new DateTime(2025, 1, 4, 10, 7, 14, 93, DateTimeKind.Local).AddTicks(8346),
                             ScheduleId = 1,
                             SeatId = 1,
                             UserId = 2
@@ -390,20 +1952,20 @@ namespace H3Project.Data.Migrations
                         new
                         {
                             Id = 2,
-                            Price = 8.50m,
-                            PurchaseDate = new DateTime(2024, 2, 10, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Price = 14.99m,
+                            PurchaseDate = new DateTime(2025, 1, 6, 10, 7, 14, 96, DateTimeKind.Local).AddTicks(6109),
                             ScheduleId = 2,
-                            SeatId = 3,
+                            SeatId = 98,
                             UserId = 3
                         },
                         new
                         {
                             Id = 3,
-                            Price = 8.50m,
-                            PurchaseDate = new DateTime(2024, 2, 10, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            ScheduleId = 2,
-                            SeatId = 4,
-                            UserId = 3
+                            Price = 9.99m,
+                            PurchaseDate = new DateTime(2025, 1, 8, 10, 7, 14, 96, DateTimeKind.Local).AddTicks(6131),
+                            ScheduleId = 3,
+                            SeatId = 157,
+                            UserId = 2
                         });
                 });
 
@@ -531,11 +2093,17 @@ namespace H3Project.Data.Migrations
 
             modelBuilder.Entity("H3Project.Data.Models.Seat", b =>
                 {
+                    b.HasOne("H3Project.Data.Models.Schedule", "Schedule")
+                        .WithMany()
+                        .HasForeignKey("ScheduleId");
+
                     b.HasOne("H3Project.Data.Models.Theater", "Theater")
                         .WithMany("Seats")
                         .HasForeignKey("TheaterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Schedule");
 
                     b.Navigation("Theater");
                 });

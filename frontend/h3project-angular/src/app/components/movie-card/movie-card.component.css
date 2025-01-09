@@ -1,0 +1,19 @@
+.movie-card {
+  height: 100%;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.movie-card:hover {
+  transform: translateY(-5px);
+}
+
+img {
+  height: 300px;
+  object-fit: cover;
+}
+
+.genres {
+  color: #666;
+  font-size: 0.9em;
+}

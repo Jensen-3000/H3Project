@@ -1,0 +1,7 @@
+<mat-card class="movie-card" (click)="navigateToMovie()">
+  <img mat-card-image [src]="movie.imageUrl" [alt]="movie.title" />
+  <mat-card-content>
+    <h2>{{ movie.title }}</h2>
+    <p class="genres">{{ movie.genres.join(", ") }}</p>
+  </mat-card-content>
+</mat-card>

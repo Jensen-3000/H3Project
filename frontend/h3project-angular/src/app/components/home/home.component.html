@@ -1,8 +1,6 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Welcome to My App</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <p>This is the home page of the application.</p>
-  </mat-card-content>
-</mat-card>
+<div class="home-container">
+  <h1>Now Showing</h1>
+  <div class="movie-grid">
+    <app-movie-card *ngFor="let movie of movies" [movie]="movie"> </app-movie-card>
+  </div>
+</div>

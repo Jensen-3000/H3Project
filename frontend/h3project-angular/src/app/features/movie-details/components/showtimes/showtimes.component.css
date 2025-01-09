@@ -1,0 +1,40 @@
+.showtimes-container {
+  padding: 20px;
+}
+
+.showtime-group {
+  margin-bottom: 24px;
+}
+
+.date-header {
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.time-slots {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+button.selected {
+  background-color: #3f51b5;
+  color: white;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 20px;
+}
+
+.error {
+  color: #f44336;
+}

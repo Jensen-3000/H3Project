@@ -1,0 +1,32 @@
+.movie-info-card {
+  margin: 20px;
+}
+
+.movie-info-container {
+  display: flex;
+  gap: 20px;
+}
+
+.poster {
+  flex: 0 0 300px;
+}
+
+.poster img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.details {
+  flex: 1;
+}
+
+.duration {
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.description {
+  margin-top: 16px;
+  line-height: 1.6;
+}

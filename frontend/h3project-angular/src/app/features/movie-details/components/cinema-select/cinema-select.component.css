@@ -1,0 +1,9 @@
+.cinema-select-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+mat-form-field {
+  flex: 1;
+}

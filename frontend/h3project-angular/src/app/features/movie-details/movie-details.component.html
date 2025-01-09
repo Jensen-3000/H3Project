@@ -1,0 +1,17 @@
+<div class="movie-details-container" *ngIf="movie">
+  <app-movie-info [movie]="movie"></app-movie-info>
+
+  <div class="booking-section">
+    <app-cinema-select [movieId]="movie.id" (cinemaSelected)="onCinemaSelected($event)">
+    </app-cinema-select>
+
+    <app-showtimes
+      [movieId]="movie.id"
+      [cinemaId]="selectedCinemaId"
+      (showtimeSelected)="onShowtimeSelected($event)"
+    ></app-showtimes>
+
+    <app-seat-selection *ngIf="selectedShowtimeId" [showtimeId]="selectedShowtimeId">
+    </app-seat-selection>
+  </div>
+</div>

@@ -9,4 +9,7 @@ public class Seat
 
     public int TheaterId { get; set; }
     public Theater Theater { get; set; }
+
+    public int? ScheduleId { get; set; }
+    public Schedule? Schedule { get; set; }
 }

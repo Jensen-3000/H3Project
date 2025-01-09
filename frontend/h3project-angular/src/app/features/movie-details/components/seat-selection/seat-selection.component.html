@@ -1,0 +1,55 @@
+<div class="theater-container">
+  <div class="screen">Screen</div>
+
+  <div class="ticket-selector">
+    <mat-form-field>
+      <mat-label>Number of Tickets</mat-label>
+      <mat-select [(ngModel)]="ticketQuantity">
+        <mat-option *ngFor="let num of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]" [value]="num">
+          {{ num }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="seats-container" *ngIf="theaterLayout; else loading">
+    <div class="seat-layout">
+      <div class="row-container" *ngFor="let group of getGroupedSeats(); trackBy: trackByRow">
+        <div class="row-label">{{ group.row }}</div>
+        <div class="seat-row">
+          <div
+            *ngFor="let seat of group.seats; trackBy: trackBySeat"
+            class="seat"
+            [ngClass]="{
+              available: seat.status === SeatStatus.Available,
+              selected: isSeatSelected(seat),
+              occupied: seat.status === SeatStatus.Occupied,
+              disabled: seat.status === SeatStatus.Disabled,
+            }"
+            (click)="toggleSeat(seat)"
+          >
+            <i class="material-icons">chair</i>
+            <span class="seat-number">{{ seat.number }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <mat-spinner></mat-spinner>
+  </ng-template>
+
+  <div class="actions" *ngIf="selectedSeats.length > 0">
+    <p>Selected seats: {{ selectedSeats.length }} / {{ ticketQuantity }}</p>
+    <p>Total: ${{ getTotalPrice() }}</p>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="selectedSeats.length !== ticketQuantity"
+      (click)="confirmSelection()"
+    >
+      Confirm Selection
+    </button>
+  </div>
+</div>

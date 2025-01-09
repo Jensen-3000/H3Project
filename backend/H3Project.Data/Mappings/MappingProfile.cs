@@ -38,5 +38,9 @@ public class MappingProfile : Profile
         CreateMap<Theater, TheaterReadDto>();
         CreateMap<TheaterCreateDto, Theater>();
         CreateMap<TheaterUpdateDto, Theater>();
+
+        CreateMap<Seat, SeatDto>()
+            .ForMember(dest => dest.Status,
+                opt => opt.MapFrom(src => src.IsAvailable ? "available" : "disabled"));
     }
 }

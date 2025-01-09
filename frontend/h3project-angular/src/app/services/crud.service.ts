@@ -12,7 +12,7 @@ export class CrudService<T> {
 
   constructor(
     protected http: HttpClient,
-    private endpoint: Endpoints,
+    protected endpoint: Endpoints,
   ) {}
 
   getAll(): Observable<T[]> {

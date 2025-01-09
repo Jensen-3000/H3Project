@@ -1,0 +1,29 @@
+<div class="showtimes-container">
+  <div *ngIf="loading" class="loading">Loading showtimes...</div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error">
+    <div *ngFor="let group of showtimeGroups" class="showtime-group">
+      <h3 class="date-header">
+        {{ group.date | date: "EEEE, MMMM d" }}
+      </h3>
+      <div class="time-slots">
+        <button
+          mat-stroked-button
+          *ngFor="let showtime of group.showtimes"
+          [class.selected]="showtime.id === selectedShowtime"
+          (click)="selectShowtime(showtime.id)"
+        >
+          {{ showtime.showTime | date: "shortTime" }}
+        </button>
+      </div>
+    </div>
+
+    <div class="actions" *ngIf="selectedShowtime">
+      <button mat-raised-button color="primary" (click)="proceedToSeats()">Select Seats</button>
+    </div>
+  </div>
+</div>

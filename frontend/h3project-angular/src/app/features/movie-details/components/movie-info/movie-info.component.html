@@ -1,0 +1,17 @@
+<mat-card class="movie-info-card">
+  <div class="movie-info-container">
+    <div class="poster">
+      <img [src]="movie.imageUrl" [alt]="movie.title" />
+    </div>
+    <div class="details">
+      <h1>{{ movie.title }}</h1>
+      <p class="duration">{{ movie.duration }} minutes</p>
+      <mat-chip-set>
+        <mat-chip *ngFor="let genre of movie.genres">
+          {{ genre }}
+        </mat-chip>
+      </mat-chip-set>
+      <p class="description">{{ movie.description }}</p>
+    </div>
+  </div>
+</mat-card>

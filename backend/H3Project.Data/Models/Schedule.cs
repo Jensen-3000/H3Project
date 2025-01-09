@@ -5,6 +5,7 @@ public class Schedule
     public int Id { get; set; }
     public DateTime ShowTime { get; set; }
     public DateTime EndTime { get; set; }
+    public decimal BasePrice { get; set; }
 
     public int MovieId { get; set; }
     public Movie Movie { get; set; }

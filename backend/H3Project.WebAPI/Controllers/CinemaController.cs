@@ -46,6 +46,24 @@ public class CinemaController : ControllerBase
         return Ok(cinemaDto);
     }
 
+    [HttpGet("movie/{movieId:int}")]
+    public async Task<IActionResult> GetCinemasByMovie(int movieId)
+    {
+        var cinemas = await _context.Schedules
+            .Where(s => s.MovieId == movieId)
+            .Select(s => s.Theater.Cinema)
+            .Distinct()
+            .Select(c => new CinemaReadDto(c.Id, c.Name, c.Address))
+            .ToListAsync();
+
+        if (!cinemas.Any())
+        {
+            return NotFound($"No cinemas found showing movie with ID {movieId}");
+        }
+
+        return Ok(cinemas);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateCinema(CinemaCreateDto cinemaCreateDto)
     {

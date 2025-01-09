@@ -1,0 +1,10 @@
+<div class="cinema-select-container">
+  <mat-form-field appearance="fill">
+    <mat-label>Select Cinema</mat-label>
+    <mat-select [(ngModel)]="selectedCinema" (selectionChange)="onCinemaChange()">
+      <mat-option *ngFor="let cinema of cinemas" [value]="cinema.id">
+        {{ cinema.name }} - {{ cinema.address }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
