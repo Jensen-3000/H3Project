@@ -1,10 +1,10 @@
 using H3Project.Data.Context;
 using H3Project.Data.Mappings;
 using H3Project.Data.Models;
-using H3Project.Data.Repository.Interfaces;
 using H3Project.Data.Repository;
-using H3Project.Data.Services.Interfaces;
+using H3Project.Data.Repository.Interfaces;
 using H3Project.Data.Services;
+using H3Project.Data.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -19,9 +19,6 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-// Services / models
-//builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
 // CORS
 builder.Services.AddCors(options =>
 {
@@ -33,18 +30,22 @@ builder.Services.AddCors(options =>
 });
 
 // EF DbContext
-builder.Services.AddScoped<IAppDbContext, AppDbContext>();
+builder.Services.AddScoped<AppDbContext>();
 
 
-var conn = builder.Configuration.GetConnectionString("LocalDbCinema");
+var connectionString = builder.Configuration.GetConnectionString("LocalDbCinema");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(conn));
+{
+    options.UseSqlServer(connectionString);
+    //options.UseLazyLoadingProxies(); // Use virtual properties to lazy load and avoid using includes everywhere
+});
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // JWT
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.Configure<JwtSettingsModel>(builder.Configuration.GetSection("JwtSettings"));
 
 // JWT Authentication
 builder.Services.AddAuthentication(options =>
@@ -73,30 +74,28 @@ builder.Services.AddAuthorizationBuilder()
 
 // Services and Repositories
 builder.Services.AddScoped<IAuthService, AuthService>();
-
 builder.Services.AddScoped<ICinemaRepository, CinemaRepository>();
-builder.Services.AddScoped<ICinemaService, CinemaService>();
-
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
-builder.Services.AddScoped<IGenreService, GenreService>();
-
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
-builder.Services.AddScoped<IMovieService, MovieService>();
-
-builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
-builder.Services.AddScoped<IScheduleService, ScheduleService>();
-
+builder.Services.AddScoped<IScreenRepository, ScreenRepository>();
+builder.Services.AddScoped<IScreeningRepository, ScreeningRepository>();
+builder.Services.AddScoped<ISeatAvailabilityRepository, SeatAvailabilityRepository>();
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
-builder.Services.AddScoped<ISeatService, SeatService>();
-
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
-builder.Services.AddScoped<ITicketService, TicketService>();
-
-builder.Services.AddScoped<ITheaterRepository, TheaterRepository>();
-builder.Services.AddScoped<ITheaterService, TheaterService>();
-
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<ICinemaService, CinemaService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
+builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<IScreenService, ScreenService>();
+builder.Services.AddScoped<IScreeningService, ScreeningService>();
+builder.Services.AddScoped<ISeatAvailabilityService, SeatAvailabilityService>();
+builder.Services.AddScoped<ISeatService, SeatService>();
+builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 
 var app = builder.Build();
 

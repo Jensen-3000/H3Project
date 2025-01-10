@@ -1,3 +1,9 @@
 namespace H3Project.Data.DTOs.Users;
 
-public record UserCreateDto(string Username, string Email, string PasswordHash, int UserRoleId);
+public class UserCreateDto
+{
+    public string Username { get; set; }
+    public string Email { get; set; }
+    public string Password { get; set; }
+    public int UserRoleId { get; set; }
+}

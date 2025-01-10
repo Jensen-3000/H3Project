@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace H3Project.WebAPI.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -17,68 +17,36 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<IEnumerable<UserReadDtoSimple>>> GetUsers()
+    //[Authorize(Roles = "Admin")]
+    public async Task<ActionResult<IEnumerable<UserSimpleDto>>> GetAll()
     {
-        var users = await _userService.GetAllUsersAsync();
-        return Ok(users);
+        return Ok(await _userService.GetAllAsync());
     }
 
     [HttpGet("{id}")]
-    [Authorize(Roles = "Customer")]
-    public async Task<ActionResult<UserReadDtoSimple>> GetUser(int id)
+    public async Task<ActionResult<UserWithRoleAndTicketsDto>> GetById(int id)
     {
-        var user = await _userService.GetUserAsync(id);
-        if (user == null)
-        {
-            return NotFound();
-        }
-        return Ok(user);
-    }
-
-    [HttpGet("{id}/tickets")]
-    public async Task<ActionResult<UserReadDto>> GetUserWithTickets(int id)
-    {
-        var user = await _userService.GetUserWithTicketsAsync(id);
-        if (user == null)
-        {
-            return NotFound();
-        }
-        return Ok(user);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutUser(int id, UserUpdateDto userDto)
-    {
-        try
-        {
-            await _userService.UpdateUserAsync(id, userDto);
-            return NoContent();
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
+        return Ok(await _userService.GetByIdAsync(id));
     }
 
     [HttpPost]
-    public async Task<ActionResult<UserReadDto>> PostUser(UserCreateDto userDto)
+    public async Task<ActionResult<UserSimpleDto>> Create(UserCreateDto createDto)
     {
-        try
-        {
-            var user = await _userService.CreateUserAsync(userDto);
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        var user = await _userService.CreateAsync(createDto);
+        return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, UserUpdateDto updateDto)
+    {
+        await _userService.UpdateAsync(id, updateDto);
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteUser(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        await _userService.DeleteUserAsync(id);
+        await _userService.DeleteAsync(id);
         return NoContent();
     }
 }

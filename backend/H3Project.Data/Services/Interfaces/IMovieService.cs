@@ -4,10 +4,10 @@ namespace H3Project.Data.Services.Interfaces;
 
 public interface IMovieService
 {
-    Task<List<MovieReadDto>> GetAllMoviesAsync();
-    Task<MovieReadDto?> GetMovieByIdAsync(int id);
-    Task<MovieReadDto?> GetMovieBySlugAsync(string slug);
-    Task<MovieReadDto> CreateMovieAsync(MovieCreateDto movieCreateDto);
-    Task<bool> UpdateMovieAsync(int id, MovieUpdateDto movieUpdateDto);
-    Task<bool> DeleteMovieAsync(int id);
+    Task<IEnumerable<MovieSimpleDto>> GetAllAsync();
+    Task<MovieDetailedDto> GetByIdAsync(int id);
+    Task<MovieDetailedDto> GetBySlugAsync(string slug);
+    Task<MovieSimpleDto> CreateAsync(MovieCreateDto createDto);
+    Task UpdateAsync(int id, MovieUpdateDto updateDto);
+    Task DeleteAsync(int id);
 }

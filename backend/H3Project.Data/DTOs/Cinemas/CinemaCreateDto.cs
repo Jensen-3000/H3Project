@@ -1,3 +1,7 @@
 namespace H3Project.Data.DTOs.Cinemas;
 
-public record CinemaCreateDto(string Name, string Address);
+public class CinemaCreateDto
+{
+    public string Name { get; set; }
+    public string Address { get; set; }
+}

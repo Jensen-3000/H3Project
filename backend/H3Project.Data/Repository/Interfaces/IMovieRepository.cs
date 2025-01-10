@@ -2,12 +2,9 @@
 
 namespace H3Project.Data.Repository.Interfaces;
 
-public interface IMovieRepository
+public interface IMovieRepository : IGenericRepository<MovieModel>
 {
-    Task<List<Movie>> GetAllMoviesAsync();
-    Task<Movie?> GetMovieByIdAsync(int id);
-    Task<Movie?> GetMovieBySlugAsync(string slug);
-    Task AddMovieAsync(Movie movie);
-    Task UpdateMovieAsync(Movie movie);
-    Task DeleteMovieAsync(Movie movie);
+    Task<MovieModel?> GetMovieWithDetailsAsync(int id);
+    Task<MovieModel?> GetMovieBySlugAsync(string slug);
+    Task UpdateMovieGenresAsync(MovieModel movie, List<int> genreIds);
 }

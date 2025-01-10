@@ -1,3 +1,8 @@
 namespace H3Project.Data.DTOs.Seats;
 
-public record SeatUpdateDto(int Id, int TheaterId, string Row, int Number, bool IsAvailable);
+public class SeatUpdateDto
+{
+    public string Row { get; set; }
+    public int Number { get; set; }
+    public int ScreenId { get; set; }
+}

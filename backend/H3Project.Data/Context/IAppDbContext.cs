@@ -6,14 +6,18 @@ namespace H3Project.Data.Context;
 
 public interface IAppDbContext
 {
-    DbSet<Cinema> Cinemas { get; set; }
-    DbSet<Genre> Genres { get; set; }
-    DbSet<Movie> Movies { get; set; }
-    DbSet<Schedule> Schedules { get; set; }
-    DbSet<Seat> Seats { get; set; }
-    DbSet<Theater> Theaters { get; set; }
-    DbSet<Ticket> Tickets { get; set; }
-    DbSet<User> Users { get; set; }
+    DbSet<CinemaModel> Cinemas { get; set; }
+    DbSet<GenreModel> Genres { get; set; }
+    DbSet<MovieModel> Movies { get; set; }
+    DbSet<MovieGenre> MovieGenres { get; set; }
+    DbSet<ScreenModel> Screens { get; set; }
+    DbSet<ScreeningModel> Screenings { get; set; }
+    DbSet<SeatModel> Seats { get; set; }
+    DbSet<SeatAvailabilityModel> SeatAvailabilities { get; set; }
+    DbSet<TicketModel> Tickets { get; set; }
+    DbSet<UserModel> Users { get; set; }
+    DbSet<UserRoleModel> UserRoles { get; set; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     EntityEntry Entry(object entity);
 }

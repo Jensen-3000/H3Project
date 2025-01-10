@@ -1,4 +1,5 @@
-﻿using H3Project.Data.DTOs.Cinemas;
+﻿using AutoMapper;
+using H3Project.Data.DTOs.Cinemas;
 using H3Project.Data.Models;
 using H3Project.Data.Repository.Interfaces;
 using H3Project.Data.Services.Interfaces;
@@ -7,59 +8,44 @@ namespace H3Project.Data.Services;
 
 public class CinemaService : ICinemaService
 {
-    private readonly ICinemaRepository _cinemaRepository;
+    private readonly ICinemaRepository _repository;
+    private readonly IMapper _mapper;
 
-    public CinemaService(ICinemaRepository cinemaRepository)
+    public CinemaService(ICinemaRepository repository, IMapper mapper)
     {
-        _cinemaRepository = cinemaRepository;
+        _repository = repository;
+        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<CinemaReadDto>> GetAllCinemasAsync()
+    public async Task<IEnumerable<CinemaSimpleDto>> GetAllAsync()
     {
-        var cinemas = await _cinemaRepository.GetAllCinemasAsync();
-        return cinemas.Select(MapModelToReadDto);
+        var cinemas = await _repository.GetAllAsync();
+        return _mapper.Map<IEnumerable<CinemaSimpleDto>>(cinemas);
     }
 
-    public async Task<CinemaReadDto> GetCinemaByIdAsync(int id)
+    public async Task<CinemaDetailedDto> GetByIdAsync(int id)
     {
-        var cinema = await _cinemaRepository.GetCinemaByIdAsync(id);
-        return cinema == null ? null : MapModelToReadDto(cinema);
+        var cinema = await _repository.GetCinemaWithScreensAsync(id);
+        return _mapper.Map<CinemaDetailedDto>(cinema);
     }
 
-    public async Task<IEnumerable<CinemaReadDto>> GetCinemasByMovieAsync(int movieId)
+    public async Task<CinemaSimpleDto> CreateAsync(CinemaCreateDto createDto)
     {
-        var cinemas = await _cinemaRepository.GetCinemasByMovieAsync(movieId);
-        return cinemas.Select(c => new CinemaReadDto(c.Id, c.Name, c.Address));
+        var cinema = _mapper.Map<CinemaModel>(createDto);
+        await _repository.AddAsync(cinema);
+        return _mapper.Map<CinemaSimpleDto>(cinema);
     }
 
-    public async Task<CinemaReadDto> CreateCinemaAsync(CinemaCreateDto cinemaCreateDto)
+    public async Task UpdateAsync(int id, CinemaUpdateDto updateDto)
     {
-        var cinema = MapCreateDtoToModel(cinemaCreateDto);
-        await _cinemaRepository.AddCinemaAsync(cinema);
-        return MapModelToReadDto(cinema);
+        var cinema = await _repository.GetByIdAsync(id);
+        _mapper.Map(updateDto, cinema);
+        await _repository.UpdateAsync(cinema);
     }
 
-    public async Task UpdateCinemaAsync(CinemaUpdateDto cinemaUpdateDto)
+    public async Task DeleteAsync(int id)
     {
-        var cinema = await _cinemaRepository.GetCinemaByIdAsync(cinemaUpdateDto.Id);
-        if (cinema != null)
-        {
-            cinema.Name = cinemaUpdateDto.Name;
-            cinema.Address = cinemaUpdateDto.Address;
-            await _cinemaRepository.UpdateCinemaAsync(cinema);
-        }
+        var cinema = await _repository.GetByIdAsync(id);
+        await _repository.DeleteAsync(cinema);
     }
-
-    public async Task DeleteCinemaAsync(int id)
-    {
-        await _cinemaRepository.DeleteCinemaAsync(id);
-    }
-
-    private static CinemaReadDto MapModelToReadDto(Cinema cinema) => new(cinema.Id, cinema.Name, cinema.Address);
-
-    private static Cinema MapCreateDtoToModel(CinemaCreateDto cinemaCreateDto) => new()
-    {
-        Name = cinemaCreateDto.Name,
-        Address = cinemaCreateDto.Address
-    };
 }

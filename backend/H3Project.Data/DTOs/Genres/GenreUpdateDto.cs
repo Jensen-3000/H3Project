@@ -1,3 +1,6 @@
 namespace H3Project.Data.DTOs.Genres;
 
-public record GenreUpdateDto(int Id, string Name);
+public class GenreUpdateDto
+{
+    public string Name { get; set; }
+}

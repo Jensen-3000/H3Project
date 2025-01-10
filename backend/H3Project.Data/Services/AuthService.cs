@@ -13,20 +13,20 @@ namespace H3Project.Data.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly IUserRepository _userRepository;
-    private readonly JwtSettings _jwtSettings;
+    private readonly IAuthRepository _authRepository;
+    private readonly JwtSettingsModel _jwtSettings;
 
-    public AuthService(IUserRepository userRepository, IOptions<JwtSettings> jwtSettings)
+    public AuthService(IAuthRepository authRepository, IOptions<JwtSettingsModel> jwtSettings)
     {
-        _userRepository = userRepository;
+        _authRepository = authRepository;
         _jwtSettings = jwtSettings.Value;
     }
 
     public async Task<string?> GenerateTokenAsync(UserLoginDto loginDto)
     {
-        var user = await _userRepository.GetUserByUsernameAsync(loginDto.Username);
+        var user = await _authRepository.GetByUsername(loginDto.Username);
 
-        if (user == null || !PasswordHasher.VerifyPassword(loginDto.Password, user.PasswordHash))
+        if (user == null || !PasswordHasher.VerifyPassword(loginDto.Password, user.Password))
         {
             return null;
         }

@@ -4,9 +4,9 @@ namespace H3Project.Data.Services.Interfaces;
 
 public interface IGenreService
 {
-    Task<List<GenreReadDto>> GetAllGenresAsync();
-    Task<GenreReadDto?> GetGenreByIdAsync(int id);
-    Task<GenreReadDto> CreateGenreAsync(GenreCreateDto genreCreateDto);
-    Task<bool> UpdateGenreAsync(int id, GenreUpdateDto genreUpdateDto);
-    Task<bool> DeleteGenreAsync(int id);
+    Task<IEnumerable<GenreSimpleDto>> GetAllAsync();
+    Task<GenreDetailedDto> GetByIdAsync(int id);
+    Task<GenreSimpleDto> CreateAsync(GenreCreateDto createDto);
+    Task UpdateAsync(int id, GenreUpdateDto updateDto);
+    Task DeleteAsync(int id);
 }

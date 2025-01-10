@@ -4,9 +4,10 @@ namespace H3Project.Data.Services.Interfaces;
 
 public interface ITicketService
 {
-    Task<List<TicketReadDto>> GetAllTicketsAsync();
-    Task<TicketReadDto?> GetTicketByIdAsync(int id);
-    Task<TicketReadDto> CreateTicketAsync(TicketCreateDto ticketCreateDto);
-    Task<bool> UpdateTicketAsync(int id, TicketUpdateDto ticketUpdateDto);
-    Task<bool> DeleteTicketAsync(int id);
+    Task<IEnumerable<TicketSimpleDto>> GetAllAsync();
+    Task<TicketWithScreeningAndSeatDto> GetByIdAsync(int id);
+    Task<IEnumerable<TicketSimpleDto>> GetByUserAsync(int userId);
+    Task<IEnumerable<TicketSimpleDto>> GetByScreeningAsync(int screeningId);
+    Task<TicketSimpleDto> CreateAsync(TicketCreateDto createDto);
+    Task DeleteAsync(int id);
 }

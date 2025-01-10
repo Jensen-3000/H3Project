@@ -1,4 +1,5 @@
-﻿using H3Project.Data.DTOs.Genres;
+﻿using AutoMapper;
+using H3Project.Data.DTOs.Genres;
 using H3Project.Data.Models;
 using H3Project.Data.Repository.Interfaces;
 using H3Project.Data.Services.Interfaces;
@@ -7,63 +8,44 @@ namespace H3Project.Data.Services;
 
 public class GenreService : IGenreService
 {
-    private readonly IGenreRepository _genreRepository;
+    private readonly IGenreRepository _repository;
+    private readonly IMapper _mapper;
 
-    public GenreService(IGenreRepository genreRepository)
+    public GenreService(IGenreRepository repository, IMapper mapper)
     {
-        _genreRepository = genreRepository;
+        _repository = repository;
+        _mapper = mapper;
     }
 
-    public async Task<List<GenreReadDto>> GetAllGenresAsync()
+    public async Task<IEnumerable<GenreSimpleDto>> GetAllAsync()
     {
-        var genres = await _genreRepository.GetAllGenresAsync();
-        return genres.Select(MapModelToReadDto).ToList();
+        var genres = await _repository.GetAllAsync();
+        return _mapper.Map<IEnumerable<GenreSimpleDto>>(genres);
     }
 
-    public async Task<GenreReadDto?> GetGenreByIdAsync(int id)
+    public async Task<GenreDetailedDto> GetByIdAsync(int id)
     {
-        var genre = await _genreRepository.GetGenreByIdAsync(id);
-        return genre == null ? null : MapModelToReadDto(genre);
+        var genre = await _repository.GetGenreWithMoviesAsync(id);
+        return _mapper.Map<GenreDetailedDto>(genre);
     }
 
-    public async Task<GenreReadDto> CreateGenreAsync(GenreCreateDto genreCreateDto)
+    public async Task<GenreSimpleDto> CreateAsync(GenreCreateDto createDto)
     {
-        var genre = MapCreateDtoToModel(genreCreateDto);
-        await _genreRepository.AddGenreAsync(genre);
-        return MapModelToReadDto(genre);
+        var genre = _mapper.Map<GenreModel>(createDto);
+        await _repository.AddAsync(genre);
+        return _mapper.Map<GenreSimpleDto>(genre);
     }
 
-    public async Task<bool> UpdateGenreAsync(int id, GenreUpdateDto genreUpdateDto)
+    public async Task UpdateAsync(int id, GenreUpdateDto updateDto)
     {
-        if (id != genreUpdateDto.Id)
-        {
-            return false;
-        }
-
-        var genre = await _genreRepository.GetGenreByIdAsync(id);
-        if (genre == null)
-        {
-            return false;
-        }
-
-        genre.Name = genreUpdateDto.Name;
-        await _genreRepository.UpdateGenreAsync(genre);
-        return true;
+        var genre = await _repository.GetByIdAsync(id);
+        _mapper.Map(updateDto, genre);
+        await _repository.UpdateAsync(genre);
     }
 
-    public async Task<bool> DeleteGenreAsync(int id)
+    public async Task DeleteAsync(int id)
     {
-        var genre = await _genreRepository.GetGenreByIdAsync(id);
-        if (genre == null)
-        {
-            return false;
-        }
-
-        await _genreRepository.DeleteGenreAsync(genre);
-        return true;
+        var genre = await _repository.GetByIdAsync(id);
+        await _repository.DeleteAsync(genre);
     }
-
-    private static GenreReadDto MapModelToReadDto(Genre genre) => new(genre.Id, genre.Name);
-
-    private static Genre MapCreateDtoToModel(GenreCreateDto genreCreateDto) => new() { Name = genreCreateDto.Name };
 }

@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace H3Project.WebAPI.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class TicketsController : ControllerBase
 {
     private readonly ITicketService _ticketService;
@@ -16,52 +16,32 @@ public class TicketsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TicketReadDto>>> GetTickets()
-    {
-        var tickets = await _ticketService.GetAllTicketsAsync();
-        return Ok(tickets);
-    }
+    public async Task<ActionResult<IEnumerable<TicketSimpleDto>>> GetAll()
+        => Ok(await _ticketService.GetAllAsync());
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<TicketReadDto>> GetTicket(int id)
-    {
-        var ticket = await _ticketService.GetTicketByIdAsync(id);
-        if (ticket == null)
-        {
-            return NotFound();
-        }
+    public async Task<ActionResult<TicketWithScreeningAndSeatDto>> GetById(int id)
+        => Ok(await _ticketService.GetByIdAsync(id));
 
-        return Ok(ticket);
-    }
+    [HttpGet("user/{userId}")]
+    public async Task<ActionResult<IEnumerable<TicketSimpleDto>>> GetByUser(int userId)
+        => Ok(await _ticketService.GetByUserAsync(userId));
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutTicket(int id, TicketUpdateDto ticketUpdateDto)
-    {
-        var result = await _ticketService.UpdateTicketAsync(id, ticketUpdateDto);
-        if (!result)
-        {
-            return BadRequest();
-        }
-
-        return NoContent();
-    }
+    [HttpGet("screening/{screeningId}")]
+    public async Task<ActionResult<IEnumerable<TicketSimpleDto>>> GetByScreening(int screeningId)
+        => Ok(await _ticketService.GetByScreeningAsync(screeningId));
 
     [HttpPost]
-    public async Task<ActionResult<TicketReadDto>> PostTicket(TicketCreateDto ticketCreateDto)
+    public async Task<ActionResult<TicketSimpleDto>> Create(TicketCreateDto createDto)
     {
-        var newTicket = await _ticketService.CreateTicketAsync(ticketCreateDto);
-        return CreatedAtAction(nameof(GetTicket), new { id = newTicket.Id }, newTicket);
+        var ticket = await _ticketService.CreateAsync(createDto);
+        return CreatedAtAction(nameof(GetById), new { id = ticket.Id }, ticket);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteTicket(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var result = await _ticketService.DeleteTicketAsync(id);
-        if (!result)
-        {
-            return NotFound();
-        }
-
+        await _ticketService.DeleteAsync(id);
         return NoContent();
     }
 }

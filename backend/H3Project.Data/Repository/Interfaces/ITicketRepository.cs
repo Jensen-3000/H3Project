@@ -2,12 +2,9 @@
 
 namespace H3Project.Data.Repository.Interfaces;
 
-public interface ITicketRepository
+public interface ITicketRepository : IGenericRepository<TicketModel>
 {
-    Task<List<Ticket>> GetAllTicketsAsync();
-    Task<Ticket?> GetTicketByIdAsync(int id);
-    Task AddTicketAsync(Ticket ticket);
-    Task AddTicketsAsync(IEnumerable<Ticket> tickets);
-    Task UpdateTicketAsync(Ticket ticket);
-    Task DeleteTicketAsync(Ticket ticket);
+    Task<TicketModel?> GetTicketWithDetailsAsync(int id);
+    Task<IEnumerable<TicketModel>> GetTicketsByUserAsync(int userId);
+    Task<IEnumerable<TicketModel>> GetTicketsByScreeningAsync(int screeningId);
 }

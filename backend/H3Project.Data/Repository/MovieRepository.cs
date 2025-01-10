@@ -5,51 +5,43 @@ using Microsoft.EntityFrameworkCore;
 
 namespace H3Project.Data.Repository;
 
-public class MovieRepository : IMovieRepository
+public class MovieRepository : GenericRepository<MovieModel>, IMovieRepository
 {
-    private readonly AppDbContext _context;
+    public MovieRepository(AppDbContext context) : base(context) { }
 
-    public MovieRepository(AppDbContext context)
-    {
-        _context = context;
-    }
-
-    public async Task<List<Movie>> GetAllMoviesAsync()
+    public async Task<MovieModel?> GetMovieWithDetailsAsync(int id)
     {
         return await _context.Movies
-            .Include(m => m.Genres)
-            .ToListAsync();
-    }
-
-    public async Task<Movie?> GetMovieByIdAsync(int id)
-    {
-        return await _context.Movies
-            .Include(m => m.Genres)
+            .Include(m => m.MovieGenres)
+                .ThenInclude(mg => mg.Genre)
+            .Include(m => m.Screenings)
             .FirstOrDefaultAsync(m => m.Id == id);
     }
 
-    public async Task<Movie?> GetMovieBySlugAsync(string slug)
+    public async Task<MovieModel?> GetMovieBySlugAsync(string slug)
     {
         return await _context.Movies
-            .Include(m => m.Genres)
+            .Include(m => m.MovieGenres)
+                .ThenInclude(mg => mg.Genre)
+            .Include(m => m.Screenings)
             .FirstOrDefaultAsync(m => m.Slug == slug);
     }
 
-    public async Task AddMovieAsync(Movie movie)
+    public async Task UpdateMovieGenresAsync(MovieModel movie, List<int> genreIds)
     {
-        await _context.Movies.AddAsync(movie);
-        await _context.SaveChangesAsync();
-    }
+        var existingGenres = await _context.MovieGenres
+            .Where(mg => mg.MovieId == movie.Id)
+            .ToListAsync();
 
-    public async Task UpdateMovieAsync(Movie movie)
-    {
-        _context.Movies.Update(movie);
-        await _context.SaveChangesAsync();
-    }
+        _context.MovieGenres.RemoveRange(existingGenres);
 
-    public async Task DeleteMovieAsync(Movie movie)
-    {
-        _context.Movies.Remove(movie);
+        var newGenres = genreIds.Select(genreId => new MovieGenre
+        {
+            MovieId = movie.Id,
+            GenreId = genreId
+        });
+
+        await _context.MovieGenres.AddRangeAsync(newGenres);
         await _context.SaveChangesAsync();
     }
 }

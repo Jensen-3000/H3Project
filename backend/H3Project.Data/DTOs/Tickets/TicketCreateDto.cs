@@ -1,3 +1,9 @@
 namespace H3Project.Data.DTOs.Tickets;
 
-public record TicketCreateDto(DateTime PurchaseDate, decimal Price, int ScheduleId, int SeatId);
+public class TicketCreateDto
+{
+    public decimal Price { get; set; }
+    public int UserId { get; set; }
+    public int ScreeningId { get; set; }
+    public int SeatId { get; set; }
+}

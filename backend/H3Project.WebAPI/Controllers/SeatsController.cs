@@ -1,111 +1,56 @@
 ﻿using H3Project.Data.DTOs.Seats;
-using H3Project.Data.DTOs.Theaters;
 using H3Project.Data.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace H3Project.WebAPI.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class SeatsController : ControllerBase
 {
     private readonly ISeatService _seatService;
-    private readonly ILogger<SeatsController> _logger;
 
-    public SeatsController(ISeatService seatService, ILogger<SeatsController> logger)
+    public SeatsController(ISeatService seatService)
     {
         _seatService = seatService;
-        _logger = logger;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<SeatReadDto>>> GetSeats()
+    public async Task<ActionResult<IEnumerable<SeatSimpleDto>>> GetAll()
     {
-        var seats = await _seatService.GetAllSeatsAsync();
-        return Ok(seats);
+        return Ok(await _seatService.GetAllAsync());
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<SeatReadDto>> GetSeat(int id)
+    public async Task<ActionResult<SeatDetailedDto>> GetById(int id)
     {
-        var seat = await _seatService.GetSeatByIdAsync(id);
-        if (seat == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(seat);
+        return Ok(await _seatService.GetByIdAsync(id));
     }
 
-    [HttpGet("theater/{theaterId}")]
-    public async Task<IActionResult> GetSeatsByTheater(int theaterId)
+    [HttpGet("screen/{screenId}")]
+    public async Task<ActionResult<IEnumerable<SeatSimpleDto>>> GetByScreen(int screenId)
     {
-        var seats = await _seatService.GetSeatsByTheaterAsync(theaterId);
-        return Ok(seats);
-    }
-
-    [HttpGet("showtime/{showtimeId}/layout")]
-    public async Task<ActionResult<TheaterLayoutDto>> GetTheaterLayout(int showtimeId)
-    {
-        var layout = await _seatService.GetTheaterLayoutAsync(showtimeId);
-        if (layout == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(layout);
-    }
-
-    [Authorize]
-    [HttpPost("reserve")]
-    public async Task<ActionResult<bool>> ReserveSeats([FromBody] SeatReservationDto reservation)
-    {
-        var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(username))
-        {
-            _logger.LogWarning("No username claim found in token");
-            return Unauthorized();
-        }
-
-        var result = await _seatService.ReserveSeatsAsync(reservation, username);
-        if (!result)
-        {
-            return BadRequest("Failed to reserve seats");
-        }
-
-        return Ok(true);
+        return Ok(await _seatService.GetByScreenAsync(screenId));
     }
 
     [HttpPost]
-    public async Task<ActionResult<SeatReadDto>> PostSeat(SeatCreateDto seatCreateDto)
+    public async Task<ActionResult<SeatSimpleDto>> Create(SeatCreateDto createDto)
     {
-        var newSeat = await _seatService.CreateSeatAsync(seatCreateDto);
-        return CreatedAtAction(nameof(GetSeat), new { id = newSeat.Id }, newSeat);
+        var seat = await _seatService.CreateAsync(createDto);
+        return CreatedAtAction(nameof(GetById), new { id = seat.Id }, seat);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutSeat(int id, SeatUpdateDto seatUpdateDto)
+    public async Task<IActionResult> Update(int id, SeatUpdateDto updateDto)
     {
-        var result = await _seatService.UpdateSeatAsync(id, seatUpdateDto);
-        if (!result)
-        {
-            return BadRequest();
-        }
-
+        await _seatService.UpdateAsync(id, updateDto);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteSeat(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var result = await _seatService.DeleteSeatAsync(id);
-        if (!result)
-        {
-            return NotFound();
-        }
-
+        await _seatService.DeleteAsync(id);
         return NoContent();
     }
 }

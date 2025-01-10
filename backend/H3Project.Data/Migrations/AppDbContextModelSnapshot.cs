@@ -22,44 +22,7 @@ namespace H3Project.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("GenreMovie", b =>
-                {
-                    b.Property<int>("GenresId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MoviesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GenresId", "MoviesId");
-
-                    b.HasIndex("MoviesId");
-
-                    b.ToTable("GenreMovie");
-
-                    b.HasData(
-                        new
-                        {
-                            GenresId = 1,
-                            MoviesId = 1
-                        },
-                        new
-                        {
-                            GenresId = 2,
-                            MoviesId = 1
-                        },
-                        new
-                        {
-                            GenresId = 2,
-                            MoviesId = 2
-                        },
-                        new
-                        {
-                            GenresId = 3,
-                            MoviesId = 3
-                        });
-                });
-
-            modelBuilder.Entity("H3Project.Data.Models.Cinema", b =>
+            modelBuilder.Entity("H3Project.Data.Models.CinemaModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -83,18 +46,24 @@ namespace H3Project.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Address = "123 Movie St",
-                            Name = "Grand Cinema"
+                            Address = "123 Main St",
+                            Name = "CineCity Central"
                         },
                         new
                         {
                             Id = 2,
-                            Address = "456 Central Ave",
-                            Name = "Downtown Cinema"
+                            Address = "456 Park Ave",
+                            Name = "MoviePlex"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Address = "789 Broadway",
+                            Name = "Star Cinema"
                         });
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.Genre", b =>
+            modelBuilder.Entity("H3Project.Data.Models.GenreModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -125,10 +94,77 @@ namespace H3Project.Data.Migrations
                         {
                             Id = 3,
                             Name = "Drama"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Sci-Fi"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Horror"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Romance"
                         });
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.Movie", b =>
+            modelBuilder.Entity("H3Project.Data.Models.MovieGenre", b =>
+                {
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MovieId", "GenreId");
+
+                    b.HasIndex("GenreId");
+
+                    b.ToTable("MovieGenres");
+
+                    b.HasData(
+                        new
+                        {
+                            MovieId = 1,
+                            GenreId = 1
+                        },
+                        new
+                        {
+                            MovieId = 1,
+                            GenreId = 4
+                        },
+                        new
+                        {
+                            MovieId = 2,
+                            GenreId = 2
+                        },
+                        new
+                        {
+                            MovieId = 2,
+                            GenreId = 6
+                        },
+                        new
+                        {
+                            MovieId = 3,
+                            GenreId = 5
+                        },
+                        new
+                        {
+                            MovieId = 4,
+                            GenreId = 1
+                        },
+                        new
+                        {
+                            MovieId = 4,
+                            GenreId = 3
+                        });
+                });
+
+            modelBuilder.Entity("H3Project.Data.Models.MovieModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -147,9 +183,6 @@ namespace H3Project.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("ReleaseDate")
-                        .HasColumnType("date");
-
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -166,1704 +199,42 @@ namespace H3Project.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "High-speed action",
-                            Duration = new TimeSpan(0, 2, 30, 0, 0),
-                            ImageUrl = "https://placehold.co/400x600?text=Fast+And+Furious+10",
-                            ReleaseDate = new DateOnly(2024, 1, 15),
-                            Slug = "fast-and-furious-10",
-                            Title = "Fast & Furious 10"
+                            Description = "Epic space adventure",
+                            Duration = new TimeSpan(0, 2, 15, 0, 0),
+                            ImageUrl = "https://placehold.co/400x600?text=Space+Warriors",
+                            Slug = "space-warriors",
+                            Title = "Space Warriors"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "Hilarious comedy",
+                            Description = "Romantic comedy",
                             Duration = new TimeSpan(0, 1, 45, 0, 0),
-                            ImageUrl = "https://placehold.co/400x600?text=Laugh+Out+Loud",
-                            ReleaseDate = new DateOnly(2024, 2, 10),
-                            Slug = "laugh-out-loud",
-                            Title = "Laugh Out Loud"
+                            ImageUrl = "https://placehold.co/400x600?text=Love+and+Laughs",
+                            Slug = "love-and-laughs",
+                            Title = "Love & Laughs"
                         },
                         new
                         {
                             Id = 3,
-                            Description = "Heartfelt drama",
-                            Duration = new TimeSpan(0, 2, 10, 0, 0),
-                            ImageUrl = "https://placehold.co/400x600?text=Deep+Emotions",
-                            ReleaseDate = new DateOnly(2024, 3, 5),
-                            Slug = "deep-emotions",
-                            Title = "Deep Emotions"
-                        });
-                });
-
-            modelBuilder.Entity("H3Project.Data.Models.Schedule", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("BasePrice")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ShowTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TheaterId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MovieId");
-
-                    b.HasIndex("TheaterId");
-
-                    b.ToTable("Schedules");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BasePrice = 12.99m,
-                            EndTime = new DateTime(2024, 1, 16, 20, 30, 0, 0, DateTimeKind.Unspecified),
-                            MovieId = 1,
-                            ShowTime = new DateTime(2024, 1, 16, 18, 0, 0, 0, DateTimeKind.Unspecified),
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BasePrice = 14.99m,
-                            EndTime = new DateTime(2024, 1, 16, 23, 30, 0, 0, DateTimeKind.Unspecified),
-                            MovieId = 1,
-                            ShowTime = new DateTime(2024, 1, 16, 21, 0, 0, 0, DateTimeKind.Unspecified),
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            BasePrice = 9.99m,
-                            EndTime = new DateTime(2024, 2, 11, 16, 45, 0, 0, DateTimeKind.Unspecified),
-                            MovieId = 2,
-                            ShowTime = new DateTime(2024, 2, 11, 15, 0, 0, 0, DateTimeKind.Unspecified),
-                            TheaterId = 2
-                        });
-                });
-
-            modelBuilder.Entity("H3Project.Data.Models.Seat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Row")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("ScheduleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TheaterId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ScheduleId");
-
-                    b.HasIndex("TheaterId");
-
-                    b.HasIndex("Row", "Number", "TheaterId")
-                        .IsUnique();
-
-                    b.ToTable("Seats");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "A",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "A",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "A",
-                            TheaterId = 1
+                            Description = "Horror thriller",
+                            Duration = new TimeSpan(0, 1, 50, 0, 0),
+                            ImageUrl = "https://placehold.co/400x600?text=Night+Terror",
+                            Slug = "night-terror",
+                            Title = "Night Terror"
                         },
                         new
                         {
                             Id = 4,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "A",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "A",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 6,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "A",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 7,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "A",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 8,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "A",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 9,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "A",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 10,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "A",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 11,
-                            IsAvailable = true,
-                            Number = 11,
-                            Row = "A",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 12,
-                            IsAvailable = true,
-                            Number = 12,
-                            Row = "A",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 13,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "B",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 14,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "B",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 15,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "B",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 16,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "B",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 17,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "B",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 18,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "B",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 19,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "B",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 20,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "B",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 21,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "B",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 22,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "B",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 23,
-                            IsAvailable = true,
-                            Number = 11,
-                            Row = "B",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 24,
-                            IsAvailable = true,
-                            Number = 12,
-                            Row = "B",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 25,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "C",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 26,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "C",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 27,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "C",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 28,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "C",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 29,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "C",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 30,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "C",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 31,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "C",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 32,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "C",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 33,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "C",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 34,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "C",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 35,
-                            IsAvailable = true,
-                            Number = 11,
-                            Row = "C",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 36,
-                            IsAvailable = true,
-                            Number = 12,
-                            Row = "C",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 37,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "D",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 38,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "D",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 39,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "D",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 40,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "D",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 41,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "D",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 42,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "D",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 43,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "D",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 44,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "D",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 45,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "D",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 46,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "D",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 47,
-                            IsAvailable = true,
-                            Number = 11,
-                            Row = "D",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 48,
-                            IsAvailable = true,
-                            Number = 12,
-                            Row = "D",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 49,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "E",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 50,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "E",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 51,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "E",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 52,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "E",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 53,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "E",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 54,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "E",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 55,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "E",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 56,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "E",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 57,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "E",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 58,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "E",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 59,
-                            IsAvailable = true,
-                            Number = 11,
-                            Row = "E",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 60,
-                            IsAvailable = true,
-                            Number = 12,
-                            Row = "E",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 61,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "F",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 62,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "F",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 63,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "F",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 64,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "F",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 65,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "F",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 66,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "F",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 67,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "F",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 68,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "F",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 69,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "F",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 70,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "F",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 71,
-                            IsAvailable = true,
-                            Number = 11,
-                            Row = "F",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 72,
-                            IsAvailable = true,
-                            Number = 12,
-                            Row = "F",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 73,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "G",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 74,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "G",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 75,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "G",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 76,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "G",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 77,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "G",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 78,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "G",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 79,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "G",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 80,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "G",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 81,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "G",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 82,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "G",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 83,
-                            IsAvailable = true,
-                            Number = 11,
-                            Row = "G",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 84,
-                            IsAvailable = true,
-                            Number = 12,
-                            Row = "G",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 85,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "H",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 86,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "H",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 87,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "H",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 88,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "H",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 89,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "H",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 90,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "H",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 91,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "H",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 92,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "H",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 93,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "H",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 94,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "H",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 95,
-                            IsAvailable = true,
-                            Number = 11,
-                            Row = "H",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 96,
-                            IsAvailable = true,
-                            Number = 12,
-                            Row = "H",
-                            TheaterId = 1
-                        },
-                        new
-                        {
-                            Id = 97,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "A",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 98,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "A",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 99,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "A",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 100,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "A",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 101,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "A",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 102,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "A",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 103,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "A",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 104,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "A",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 105,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "A",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 106,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "A",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 107,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "B",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 108,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "B",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 109,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "B",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 110,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "B",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 111,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "B",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 112,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "B",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 113,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "B",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 114,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "B",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 115,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "B",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 116,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "B",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 117,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "C",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 118,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "C",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 119,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "C",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 120,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "C",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 121,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "C",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 122,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "C",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 123,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "C",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 124,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "C",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 125,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "C",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 126,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "C",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 127,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "D",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 128,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "D",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 129,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "D",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 130,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "D",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 131,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "D",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 132,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "D",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 133,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "D",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 134,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "D",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 135,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "D",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 136,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "D",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 137,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "E",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 138,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "E",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 139,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "E",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 140,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "E",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 141,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "E",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 142,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "E",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 143,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "E",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 144,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "E",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 145,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "E",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 146,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "E",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 147,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "F",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 148,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "F",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 149,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "F",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 150,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "F",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 151,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "F",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 152,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "F",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 153,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "F",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 154,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "F",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 155,
-                            IsAvailable = true,
-                            Number = 9,
-                            Row = "F",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 156,
-                            IsAvailable = true,
-                            Number = 10,
-                            Row = "F",
-                            TheaterId = 2
-                        },
-                        new
-                        {
-                            Id = 157,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "A",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 158,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "A",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 159,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "A",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 160,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "A",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 161,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "A",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 162,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "A",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 163,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "A",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 164,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "A",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 165,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "B",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 166,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "B",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 167,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "B",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 168,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "B",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 169,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "B",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 170,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "B",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 171,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "B",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 172,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "B",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 173,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "C",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 174,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "C",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 175,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "C",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 176,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "C",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 177,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "C",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 178,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "C",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 179,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "C",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 180,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "C",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 181,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "D",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 182,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "D",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 183,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "D",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 184,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "D",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 185,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "D",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 186,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "D",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 187,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "D",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 188,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "D",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 189,
-                            IsAvailable = true,
-                            Number = 1,
-                            Row = "E",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 190,
-                            IsAvailable = true,
-                            Number = 2,
-                            Row = "E",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 191,
-                            IsAvailable = true,
-                            Number = 3,
-                            Row = "E",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 192,
-                            IsAvailable = true,
-                            Number = 4,
-                            Row = "E",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 193,
-                            IsAvailable = true,
-                            Number = 5,
-                            Row = "E",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 194,
-                            IsAvailable = true,
-                            Number = 6,
-                            Row = "E",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 195,
-                            IsAvailable = true,
-                            Number = 7,
-                            Row = "E",
-                            TheaterId = 3
-                        },
-                        new
-                        {
-                            Id = 196,
-                            IsAvailable = true,
-                            Number = 8,
-                            Row = "E",
-                            TheaterId = 3
+                            Description = "Action drama",
+                            Duration = new TimeSpan(0, 2, 30, 0, 0),
+                            ImageUrl = "https://placehold.co/400x600?text=Last+Stand",
+                            Slug = "the-last-stand",
+                            Title = "The Last Stand"
                         });
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.Theater", b =>
+            modelBuilder.Entity("H3Project.Data.Models.ScreenModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1882,30 +253,4128 @@ namespace H3Project.Data.Migrations
 
                     b.HasIndex("CinemaId");
 
-                    b.ToTable("Theaters");
+                    b.ToTable("Screens");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             CinemaId = 1,
-                            Name = "Screen 1"
+                            Name = "Lille Sal"
                         },
                         new
                         {
                             Id = 2,
                             CinemaId = 1,
-                            Name = "Screen 2"
+                            Name = "Stor Sal"
                         },
                         new
                         {
                             Id = 3,
                             CinemaId = 2,
-                            Name = "Screen 1"
+                            Name = "Lille Sal"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CinemaId = 2,
+                            Name = "Stor Sal"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CinemaId = 3,
+                            Name = "Maxi Sal"
                         });
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.Ticket", b =>
+            modelBuilder.Entity("H3Project.Data.Models.ScreeningModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ScreenId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("ScreenId");
+
+                    b.ToTable("Screenings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            MovieId = 1,
+                            ScreenId = 1,
+                            StartTime = new DateTime(2025, 1, 11, 14, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            MovieId = 2,
+                            ScreenId = 2,
+                            StartTime = new DateTime(2025, 1, 11, 17, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            MovieId = 3,
+                            ScreenId = 3,
+                            StartTime = new DateTime(2025, 1, 11, 20, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            MovieId = 1,
+                            ScreenId = 1,
+                            StartTime = new DateTime(2025, 1, 12, 14, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            MovieId = 2,
+                            ScreenId = 2,
+                            StartTime = new DateTime(2025, 1, 12, 17, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 6,
+                            MovieId = 3,
+                            ScreenId = 3,
+                            StartTime = new DateTime(2025, 1, 12, 20, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 7,
+                            MovieId = 1,
+                            ScreenId = 1,
+                            StartTime = new DateTime(2025, 1, 13, 14, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 8,
+                            MovieId = 2,
+                            ScreenId = 2,
+                            StartTime = new DateTime(2025, 1, 13, 17, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 9,
+                            MovieId = 3,
+                            ScreenId = 3,
+                            StartTime = new DateTime(2025, 1, 13, 20, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 10,
+                            MovieId = 1,
+                            ScreenId = 1,
+                            StartTime = new DateTime(2025, 1, 14, 14, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 11,
+                            MovieId = 2,
+                            ScreenId = 2,
+                            StartTime = new DateTime(2025, 1, 14, 17, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 12,
+                            MovieId = 3,
+                            ScreenId = 3,
+                            StartTime = new DateTime(2025, 1, 14, 20, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 13,
+                            MovieId = 1,
+                            ScreenId = 1,
+                            StartTime = new DateTime(2025, 1, 15, 14, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 14,
+                            MovieId = 2,
+                            ScreenId = 2,
+                            StartTime = new DateTime(2025, 1, 15, 17, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 15,
+                            MovieId = 3,
+                            ScreenId = 3,
+                            StartTime = new DateTime(2025, 1, 15, 20, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 16,
+                            MovieId = 1,
+                            ScreenId = 1,
+                            StartTime = new DateTime(2025, 1, 16, 14, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 17,
+                            MovieId = 2,
+                            ScreenId = 2,
+                            StartTime = new DateTime(2025, 1, 16, 17, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 18,
+                            MovieId = 3,
+                            ScreenId = 3,
+                            StartTime = new DateTime(2025, 1, 16, 20, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 19,
+                            MovieId = 1,
+                            ScreenId = 1,
+                            StartTime = new DateTime(2025, 1, 17, 14, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 20,
+                            MovieId = 2,
+                            ScreenId = 2,
+                            StartTime = new DateTime(2025, 1, 17, 17, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            Id = 21,
+                            MovieId = 3,
+                            ScreenId = 3,
+                            StartTime = new DateTime(2025, 1, 17, 20, 0, 0, 0, DateTimeKind.Local)
+                        });
+                });
+
+            modelBuilder.Entity("H3Project.Data.Models.SeatAvailabilityModel", b =>
+                {
+                    b.Property<int>("ScreeningId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ScreeningId", "SeatId");
+
+                    b.HasIndex("SeatId");
+
+                    b.ToTable("SeatAvailabilities");
+
+                    b.HasData(
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 1,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 2,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 3,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 4,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 5,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 6,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 7,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 8,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 9,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 10,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 11,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 12,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 13,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 14,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 15,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 16,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 17,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 18,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 19,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 20,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 21,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 22,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 23,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 1,
+                            SeatId = 24,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 25,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 26,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 27,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 28,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 29,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 30,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 31,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 32,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 33,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 34,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 35,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 36,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 37,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 38,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 39,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 40,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 41,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 42,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 43,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 44,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 45,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 46,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 47,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 2,
+                            SeatId = 48,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 49,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 50,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 51,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 52,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 53,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 54,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 55,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 56,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 57,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 58,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 59,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 60,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 61,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 62,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 63,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 64,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 65,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 66,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 67,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 68,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 69,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 70,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 71,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 3,
+                            SeatId = 72,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 1,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 2,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 3,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 4,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 5,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 6,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 7,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 8,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 9,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 10,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 11,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 12,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 13,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 14,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 15,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 16,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 17,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 18,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 19,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 20,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 21,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 22,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 23,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 4,
+                            SeatId = 24,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 25,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 26,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 27,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 28,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 29,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 30,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 31,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 32,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 33,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 34,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 35,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 36,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 37,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 38,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 39,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 40,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 41,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 42,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 43,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 44,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 45,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 46,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 47,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 5,
+                            SeatId = 48,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 49,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 50,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 51,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 52,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 53,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 54,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 55,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 56,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 57,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 58,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 59,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 60,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 61,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 62,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 63,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 64,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 65,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 66,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 67,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 68,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 69,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 70,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 71,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 6,
+                            SeatId = 72,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 1,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 2,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 3,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 4,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 5,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 6,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 7,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 8,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 9,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 10,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 11,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 12,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 13,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 14,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 15,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 16,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 17,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 18,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 19,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 20,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 21,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 22,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 23,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 7,
+                            SeatId = 24,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 25,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 26,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 27,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 28,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 29,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 30,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 31,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 32,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 33,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 34,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 35,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 36,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 37,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 38,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 39,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 40,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 41,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 42,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 43,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 44,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 45,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 46,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 47,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 8,
+                            SeatId = 48,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 49,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 50,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 51,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 52,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 53,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 54,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 55,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 56,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 57,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 58,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 59,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 60,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 61,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 62,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 63,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 64,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 65,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 66,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 67,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 68,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 69,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 70,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 71,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 9,
+                            SeatId = 72,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 1,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 2,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 3,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 4,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 5,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 6,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 7,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 8,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 9,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 10,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 11,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 12,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 13,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 14,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 15,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 16,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 17,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 18,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 19,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 20,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 21,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 22,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 23,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 10,
+                            SeatId = 24,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 25,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 26,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 27,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 28,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 29,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 30,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 31,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 32,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 33,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 34,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 35,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 36,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 37,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 38,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 39,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 40,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 41,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 42,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 43,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 44,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 45,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 46,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 47,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 11,
+                            SeatId = 48,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 49,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 50,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 51,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 52,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 53,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 54,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 55,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 56,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 57,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 58,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 59,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 60,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 61,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 62,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 63,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 64,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 65,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 66,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 67,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 68,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 69,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 70,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 71,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 12,
+                            SeatId = 72,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 1,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 2,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 3,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 4,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 5,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 6,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 7,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 8,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 9,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 10,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 11,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 12,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 13,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 14,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 15,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 16,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 17,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 18,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 19,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 20,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 21,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 22,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 23,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 13,
+                            SeatId = 24,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 25,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 26,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 27,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 28,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 29,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 30,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 31,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 32,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 33,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 34,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 35,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 36,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 37,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 38,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 39,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 40,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 41,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 42,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 43,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 44,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 45,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 46,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 47,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 14,
+                            SeatId = 48,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 49,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 50,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 51,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 52,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 53,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 54,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 55,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 56,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 57,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 58,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 59,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 60,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 61,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 62,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 63,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 64,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 65,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 66,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 67,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 68,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 69,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 70,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 71,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 15,
+                            SeatId = 72,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 1,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 2,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 3,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 4,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 5,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 6,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 7,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 8,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 9,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 10,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 11,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 12,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 13,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 14,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 15,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 16,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 17,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 18,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 19,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 20,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 21,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 22,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 23,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 16,
+                            SeatId = 24,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 25,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 26,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 27,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 28,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 29,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 30,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 31,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 32,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 33,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 34,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 35,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 36,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 37,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 38,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 39,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 40,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 41,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 42,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 43,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 44,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 45,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 46,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 47,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 17,
+                            SeatId = 48,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 49,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 50,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 51,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 52,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 53,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 54,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 55,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 56,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 57,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 58,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 59,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 60,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 61,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 62,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 63,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 64,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 65,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 66,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 67,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 68,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 69,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 70,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 71,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 18,
+                            SeatId = 72,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 1,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 2,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 3,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 4,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 5,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 6,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 7,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 8,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 9,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 10,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 11,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 12,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 13,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 14,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 15,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 16,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 17,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 18,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 19,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 20,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 21,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 22,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 23,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 19,
+                            SeatId = 24,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 25,
+                            IsAvailable = false
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 26,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 27,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 28,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 29,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 30,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 31,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 32,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 33,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 34,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 35,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 36,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 37,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 38,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 39,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 40,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 41,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 42,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 43,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 44,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 45,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 46,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 47,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 20,
+                            SeatId = 48,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 49,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 50,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 51,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 52,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 53,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 54,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 55,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 56,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 57,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 58,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 59,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 60,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 61,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 62,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 63,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 64,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 65,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 66,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 67,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 68,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 69,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 70,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 71,
+                            IsAvailable = true
+                        },
+                        new
+                        {
+                            ScreeningId = 21,
+                            SeatId = 72,
+                            IsAvailable = true
+                        });
+                });
+
+            modelBuilder.Entity("H3Project.Data.Models.SeatModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Row")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ScreenId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScreenId");
+
+                    b.ToTable("Seats");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Number = 1,
+                            Row = "A",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Number = 2,
+                            Row = "A",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Number = 3,
+                            Row = "A",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Number = 4,
+                            Row = "A",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Number = 5,
+                            Row = "A",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Number = 6,
+                            Row = "A",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Number = 1,
+                            Row = "B",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Number = 2,
+                            Row = "B",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Number = 3,
+                            Row = "B",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Number = 4,
+                            Row = "B",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Number = 5,
+                            Row = "B",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Number = 6,
+                            Row = "B",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Number = 1,
+                            Row = "C",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Number = 2,
+                            Row = "C",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Number = 3,
+                            Row = "C",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Number = 4,
+                            Row = "C",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Number = 5,
+                            Row = "C",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Number = 6,
+                            Row = "C",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Number = 1,
+                            Row = "D",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Number = 2,
+                            Row = "D",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Number = 3,
+                            Row = "D",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Number = 4,
+                            Row = "D",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Number = 5,
+                            Row = "D",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 24,
+                            Number = 6,
+                            Row = "D",
+                            ScreenId = 1
+                        },
+                        new
+                        {
+                            Id = 25,
+                            Number = 1,
+                            Row = "A",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 26,
+                            Number = 2,
+                            Row = "A",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 27,
+                            Number = 3,
+                            Row = "A",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 28,
+                            Number = 4,
+                            Row = "A",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 29,
+                            Number = 5,
+                            Row = "A",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 30,
+                            Number = 6,
+                            Row = "A",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 31,
+                            Number = 1,
+                            Row = "B",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 32,
+                            Number = 2,
+                            Row = "B",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 33,
+                            Number = 3,
+                            Row = "B",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 34,
+                            Number = 4,
+                            Row = "B",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 35,
+                            Number = 5,
+                            Row = "B",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 36,
+                            Number = 6,
+                            Row = "B",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 37,
+                            Number = 1,
+                            Row = "C",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 38,
+                            Number = 2,
+                            Row = "C",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 39,
+                            Number = 3,
+                            Row = "C",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 40,
+                            Number = 4,
+                            Row = "C",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 41,
+                            Number = 5,
+                            Row = "C",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 42,
+                            Number = 6,
+                            Row = "C",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 43,
+                            Number = 1,
+                            Row = "D",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 44,
+                            Number = 2,
+                            Row = "D",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 45,
+                            Number = 3,
+                            Row = "D",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 46,
+                            Number = 4,
+                            Row = "D",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 47,
+                            Number = 5,
+                            Row = "D",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 48,
+                            Number = 6,
+                            Row = "D",
+                            ScreenId = 2
+                        },
+                        new
+                        {
+                            Id = 49,
+                            Number = 1,
+                            Row = "A",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 50,
+                            Number = 2,
+                            Row = "A",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 51,
+                            Number = 3,
+                            Row = "A",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 52,
+                            Number = 4,
+                            Row = "A",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 53,
+                            Number = 5,
+                            Row = "A",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 54,
+                            Number = 6,
+                            Row = "A",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 55,
+                            Number = 1,
+                            Row = "B",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 56,
+                            Number = 2,
+                            Row = "B",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 57,
+                            Number = 3,
+                            Row = "B",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 58,
+                            Number = 4,
+                            Row = "B",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 59,
+                            Number = 5,
+                            Row = "B",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 60,
+                            Number = 6,
+                            Row = "B",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 61,
+                            Number = 1,
+                            Row = "C",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 62,
+                            Number = 2,
+                            Row = "C",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 63,
+                            Number = 3,
+                            Row = "C",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 64,
+                            Number = 4,
+                            Row = "C",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 65,
+                            Number = 5,
+                            Row = "C",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 66,
+                            Number = 6,
+                            Row = "C",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 67,
+                            Number = 1,
+                            Row = "D",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 68,
+                            Number = 2,
+                            Row = "D",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 69,
+                            Number = 3,
+                            Row = "D",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 70,
+                            Number = 4,
+                            Row = "D",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 71,
+                            Number = 5,
+                            Row = "D",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 72,
+                            Number = 6,
+                            Row = "D",
+                            ScreenId = 3
+                        },
+                        new
+                        {
+                            Id = 73,
+                            Number = 1,
+                            Row = "A",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 74,
+                            Number = 2,
+                            Row = "A",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 75,
+                            Number = 3,
+                            Row = "A",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 76,
+                            Number = 4,
+                            Row = "A",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 77,
+                            Number = 5,
+                            Row = "A",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 78,
+                            Number = 6,
+                            Row = "A",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 79,
+                            Number = 1,
+                            Row = "B",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 80,
+                            Number = 2,
+                            Row = "B",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 81,
+                            Number = 3,
+                            Row = "B",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 82,
+                            Number = 4,
+                            Row = "B",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 83,
+                            Number = 5,
+                            Row = "B",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 84,
+                            Number = 6,
+                            Row = "B",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 85,
+                            Number = 1,
+                            Row = "C",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 86,
+                            Number = 2,
+                            Row = "C",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 87,
+                            Number = 3,
+                            Row = "C",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 88,
+                            Number = 4,
+                            Row = "C",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 89,
+                            Number = 5,
+                            Row = "C",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 90,
+                            Number = 6,
+                            Row = "C",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 91,
+                            Number = 1,
+                            Row = "D",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 92,
+                            Number = 2,
+                            Row = "D",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 93,
+                            Number = 3,
+                            Row = "D",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 94,
+                            Number = 4,
+                            Row = "D",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 95,
+                            Number = 5,
+                            Row = "D",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 96,
+                            Number = 6,
+                            Row = "D",
+                            ScreenId = 4
+                        },
+                        new
+                        {
+                            Id = 97,
+                            Number = 1,
+                            Row = "A",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 98,
+                            Number = 2,
+                            Row = "A",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 99,
+                            Number = 3,
+                            Row = "A",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 100,
+                            Number = 4,
+                            Row = "A",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 101,
+                            Number = 5,
+                            Row = "A",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 102,
+                            Number = 6,
+                            Row = "A",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 103,
+                            Number = 1,
+                            Row = "B",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 104,
+                            Number = 2,
+                            Row = "B",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 105,
+                            Number = 3,
+                            Row = "B",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 106,
+                            Number = 4,
+                            Row = "B",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 107,
+                            Number = 5,
+                            Row = "B",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 108,
+                            Number = 6,
+                            Row = "B",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 109,
+                            Number = 1,
+                            Row = "C",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 110,
+                            Number = 2,
+                            Row = "C",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 111,
+                            Number = 3,
+                            Row = "C",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 112,
+                            Number = 4,
+                            Row = "C",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 113,
+                            Number = 5,
+                            Row = "C",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 114,
+                            Number = 6,
+                            Row = "C",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 115,
+                            Number = 1,
+                            Row = "D",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 116,
+                            Number = 2,
+                            Row = "D",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 117,
+                            Number = 3,
+                            Row = "D",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 118,
+                            Number = 4,
+                            Row = "D",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 119,
+                            Number = 5,
+                            Row = "D",
+                            ScreenId = 5
+                        },
+                        new
+                        {
+                            Id = 120,
+                            Number = 6,
+                            Row = "D",
+                            ScreenId = 5
+                        });
+                });
+
+            modelBuilder.Entity("H3Project.Data.Models.TicketModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1917,10 +4386,7 @@ namespace H3Project.Data.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("PurchaseDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ScheduleId")
+                    b.Property<int>("ScreeningId")
                         .HasColumnType("int");
 
                     b.Property<int>("SeatId")
@@ -1931,7 +4397,7 @@ namespace H3Project.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ScheduleId");
+                    b.HasIndex("ScreeningId");
 
                     b.HasIndex("SeatId");
 
@@ -1944,32 +4410,29 @@ namespace H3Project.Data.Migrations
                         {
                             Id = 1,
                             Price = 12.99m,
-                            PurchaseDate = new DateTime(2025, 1, 4, 10, 7, 14, 93, DateTimeKind.Local).AddTicks(8346),
-                            ScheduleId = 1,
+                            ScreeningId = 1,
                             SeatId = 1,
                             UserId = 2
                         },
                         new
                         {
                             Id = 2,
-                            Price = 14.99m,
-                            PurchaseDate = new DateTime(2025, 1, 6, 10, 7, 14, 96, DateTimeKind.Local).AddTicks(6109),
-                            ScheduleId = 2,
-                            SeatId = 98,
-                            UserId = 3
+                            Price = 12.99m,
+                            ScreeningId = 1,
+                            SeatId = 2,
+                            UserId = 2
                         },
                         new
                         {
                             Id = 3,
-                            Price = 9.99m,
-                            PurchaseDate = new DateTime(2025, 1, 8, 10, 7, 14, 96, DateTimeKind.Local).AddTicks(6131),
-                            ScheduleId = 3,
-                            SeatId = 157,
-                            UserId = 2
+                            Price = 14.99m,
+                            ScreeningId = 2,
+                            SeatId = 25,
+                            UserId = 3
                         });
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.User", b =>
+            modelBuilder.Entity("H3Project.Data.Models.UserModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1981,7 +4444,7 @@ namespace H3Project.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -2005,30 +4468,30 @@ namespace H3Project.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Email = "john@example.com",
-                            PasswordHash = "hashed_password_1",
+                            Email = "admin@cinema.com",
+                            Password = "pmWkWSBCL51Bfkhn79xPuKBKHz//H6B+mY6G9/eieuM=",
                             UserRoleId = 1,
-                            Username = "john_doe"
+                            Username = "a"
                         },
                         new
                         {
                             Id = 2,
-                            Email = "jane@example.com",
-                            PasswordHash = "hashed_password_2",
+                            Email = "john@example.com",
+                            Password = "pmWkWSBCL51Bfkhn79xPuKBKHz//H6B+mY6G9/eieuM=",
                             UserRoleId = 2,
-                            Username = "jane_smith"
+                            Username = "john_doe"
                         },
                         new
                         {
                             Id = 3,
-                            Email = "alice@example.com",
-                            PasswordHash = "hashed_password_3",
+                            Email = "jane@example.com",
+                            Password = "A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ=",
                             UserRoleId = 2,
-                            Username = "alice_jones"
+                            Username = "jane_smith"
                         });
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.UserRole", b =>
+            modelBuilder.Entity("H3Project.Data.Models.UserRoleModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2053,65 +4516,33 @@ namespace H3Project.Data.Migrations
                         new
                         {
                             Id = 2,
-                            Role = "Customer"
+                            Role = "User"
                         });
                 });
 
-            modelBuilder.Entity("GenreMovie", b =>
+            modelBuilder.Entity("H3Project.Data.Models.MovieGenre", b =>
                 {
-                    b.HasOne("H3Project.Data.Models.Genre", null)
-                        .WithMany()
-                        .HasForeignKey("GenresId")
+                    b.HasOne("H3Project.Data.Models.GenreModel", "Genre")
+                        .WithMany("MovieGenres")
+                        .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("H3Project.Data.Models.Movie", null)
-                        .WithMany()
-                        .HasForeignKey("MoviesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("H3Project.Data.Models.Schedule", b =>
-                {
-                    b.HasOne("H3Project.Data.Models.Movie", "Movie")
-                        .WithMany("Schedules")
+                    b.HasOne("H3Project.Data.Models.MovieModel", "Movie")
+                        .WithMany("MovieGenres")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("H3Project.Data.Models.Theater", "Theater")
-                        .WithMany("Schedules")
-                        .HasForeignKey("TheaterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Genre");
 
                     b.Navigation("Movie");
-
-                    b.Navigation("Theater");
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.Seat", b =>
+            modelBuilder.Entity("H3Project.Data.Models.ScreenModel", b =>
                 {
-                    b.HasOne("H3Project.Data.Models.Schedule", "Schedule")
-                        .WithMany()
-                        .HasForeignKey("ScheduleId");
-
-                    b.HasOne("H3Project.Data.Models.Theater", "Theater")
-                        .WithMany("Seats")
-                        .HasForeignKey("TheaterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Schedule");
-
-                    b.Navigation("Theater");
-                });
-
-            modelBuilder.Entity("H3Project.Data.Models.Theater", b =>
-                {
-                    b.HasOne("H3Project.Data.Models.Cinema", "Cinema")
-                        .WithMany("Theaters")
+                    b.HasOne("H3Project.Data.Models.CinemaModel", "Cinema")
+                        .WithMany("Screens")
                         .HasForeignKey("CinemaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2119,37 +4550,86 @@ namespace H3Project.Data.Migrations
                     b.Navigation("Cinema");
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.Ticket", b =>
+            modelBuilder.Entity("H3Project.Data.Models.ScreeningModel", b =>
                 {
-                    b.HasOne("H3Project.Data.Models.Schedule", "Schedule")
-                        .WithMany()
-                        .HasForeignKey("ScheduleId")
+                    b.HasOne("H3Project.Data.Models.MovieModel", "Movie")
+                        .WithMany("Screenings")
+                        .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("H3Project.Data.Models.Seat", "Seat")
+                    b.HasOne("H3Project.Data.Models.ScreenModel", "Screen")
+                        .WithMany("Screenings")
+                        .HasForeignKey("ScreenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("Screen");
+                });
+
+            modelBuilder.Entity("H3Project.Data.Models.SeatAvailabilityModel", b =>
+                {
+                    b.HasOne("H3Project.Data.Models.ScreeningModel", "Screening")
+                        .WithMany("SeatAvailabilities")
+                        .HasForeignKey("ScreeningId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("H3Project.Data.Models.SeatModel", "Seat")
+                        .WithMany("SeatAvailabilities")
+                        .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Screening");
+
+                    b.Navigation("Seat");
+                });
+
+            modelBuilder.Entity("H3Project.Data.Models.SeatModel", b =>
+                {
+                    b.HasOne("H3Project.Data.Models.ScreenModel", "Screen")
+                        .WithMany("Seats")
+                        .HasForeignKey("ScreenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Screen");
+                });
+
+            modelBuilder.Entity("H3Project.Data.Models.TicketModel", b =>
+                {
+                    b.HasOne("H3Project.Data.Models.ScreeningModel", "Screening")
+                        .WithMany("Tickets")
+                        .HasForeignKey("ScreeningId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("H3Project.Data.Models.SeatModel", "Seat")
                         .WithMany()
                         .HasForeignKey("SeatId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("H3Project.Data.Models.User", "User")
+                    b.HasOne("H3Project.Data.Models.UserModel", "User")
                         .WithMany("Tickets")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Schedule");
+                    b.Navigation("Screening");
 
                     b.Navigation("Seat");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.User", b =>
+            modelBuilder.Entity("H3Project.Data.Models.UserModel", b =>
                 {
-                    b.HasOne("H3Project.Data.Models.UserRole", "UserRole")
-                        .WithMany()
+                    b.HasOne("H3Project.Data.Models.UserRoleModel", "UserRole")
+                        .WithMany("Users")
                         .HasForeignKey("UserRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2157,26 +4637,50 @@ namespace H3Project.Data.Migrations
                     b.Navigation("UserRole");
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.Cinema", b =>
+            modelBuilder.Entity("H3Project.Data.Models.CinemaModel", b =>
                 {
-                    b.Navigation("Theaters");
+                    b.Navigation("Screens");
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.Movie", b =>
+            modelBuilder.Entity("H3Project.Data.Models.GenreModel", b =>
                 {
-                    b.Navigation("Schedules");
+                    b.Navigation("MovieGenres");
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.Theater", b =>
+            modelBuilder.Entity("H3Project.Data.Models.MovieModel", b =>
                 {
-                    b.Navigation("Schedules");
+                    b.Navigation("MovieGenres");
+
+                    b.Navigation("Screenings");
+                });
+
+            modelBuilder.Entity("H3Project.Data.Models.ScreenModel", b =>
+                {
+                    b.Navigation("Screenings");
 
                     b.Navigation("Seats");
                 });
 
-            modelBuilder.Entity("H3Project.Data.Models.User", b =>
+            modelBuilder.Entity("H3Project.Data.Models.ScreeningModel", b =>
+                {
+                    b.Navigation("SeatAvailabilities");
+
+                    b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("H3Project.Data.Models.SeatModel", b =>
+                {
+                    b.Navigation("SeatAvailabilities");
+                });
+
+            modelBuilder.Entity("H3Project.Data.Models.UserModel", b =>
                 {
                     b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("H3Project.Data.Models.UserRoleModel", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

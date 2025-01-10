@@ -2,12 +2,7 @@
 
 namespace H3Project.Data.Repository.Interfaces;
 
-public interface ICinemaRepository
+public interface ICinemaRepository : IGenericRepository<CinemaModel>
 {
-    Task<IEnumerable<Cinema>> GetAllCinemasAsync();
-    Task<Cinema> GetCinemaByIdAsync(int id);
-    Task<IEnumerable<Cinema>> GetCinemasByMovieAsync(int movieId);
-    Task AddCinemaAsync(Cinema cinema);
-    Task UpdateCinemaAsync(Cinema cinema);
-    Task DeleteCinemaAsync(int id);
+    Task<CinemaModel> GetCinemaWithScreensAsync(int id);
 }

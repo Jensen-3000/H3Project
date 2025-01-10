@@ -1,3 +1,8 @@
 namespace H3Project.Data.DTOs.Users;
 
-public record UserUpdateDto(string Username, string Email, string PasswordHash, int UserRoleId);
+public class UserUpdateDto
+{
+    public string Username { get; set; }
+    public string Email { get; set; }
+    public int UserRoleId { get; set; }
+}
