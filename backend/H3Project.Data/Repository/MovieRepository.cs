@@ -15,6 +15,8 @@ public class MovieRepository : GenericRepository<MovieModel>, IMovieRepository
             .Include(m => m.MovieGenres)
                 .ThenInclude(mg => mg.Genre)
             .Include(m => m.Screenings)
+                .ThenInclude(s => s.Screen)
+                    .ThenInclude(sc => sc.Cinema)
             .FirstOrDefaultAsync(m => m.Id == id);
     }
 

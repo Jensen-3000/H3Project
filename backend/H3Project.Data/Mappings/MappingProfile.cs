@@ -38,7 +38,9 @@ public class MappingProfile : Profile
         CreateMap<ScreenModel, ScreenDetailedDto>();
 
         // Screening
-        CreateMap<ScreeningModel, ScreeningSimpleDto>();
+        CreateMap<ScreeningModel, ScreeningSimpleDto>()
+            .ForMember(dest => dest.CinemaName, opt => opt.MapFrom(src => src.Screen.Cinema.Name))
+            .ForMember(dest => dest.CinemaAddress, opt => opt.MapFrom(src => src.Screen.Cinema.Address));
         CreateMap<ScreeningModel, ScreeningDetailsDto>();
         CreateMap<ScreeningModel, ScreeningAvailableSeatsDto>();
 

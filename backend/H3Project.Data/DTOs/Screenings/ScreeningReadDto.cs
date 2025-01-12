@@ -6,6 +6,8 @@ public class ScreeningSimpleDto
 {
     public int Id { get; set; }
     public DateTime StartTime { get; set; }
+    public string CinemaName { get; set; }
+    public string CinemaAddress { get; set; }
 }
 
 public class ScreeningDetailsDto
