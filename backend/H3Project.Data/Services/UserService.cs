@@ -36,10 +36,10 @@ public class UserService : IUserService
             throw new InvalidOperationException("Username already exists");
         }
 
-        if (await _repository.EmailExistsAsync(createDto.Email))
-        {
-            throw new InvalidOperationException("Email already exists");
-        }
+        //if (await _repository.EmailExistsAsync(createDto.Email))
+        //{
+        //    throw new InvalidOperationException("Email already exists");
+        //}
 
         var user = _mapper.Map<UserModel>(createDto);
         user.Password = PasswordHasher.HashPassword(createDto.Password);

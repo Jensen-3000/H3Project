@@ -57,6 +57,8 @@ public class MappingProfile : Profile
         // User
         CreateMap<UserModel, UserSimpleDto>();
         CreateMap<UserModel, UserWithRoleAndTicketsDto>();
+        CreateMap<UserModel, UserCreateDto>().ReverseMap();
+        CreateMap<UserModel, UserUpdateDto>();
 
         // UserRole
         CreateMap<UserRoleModel, UserRoleSimpleDto>();

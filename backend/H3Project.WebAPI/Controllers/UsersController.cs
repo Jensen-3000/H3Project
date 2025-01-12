@@ -29,7 +29,7 @@ public class UsersController : ControllerBase
         return Ok(await _userService.GetByIdAsync(id));
     }
 
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<ActionResult<UserSimpleDto>> Create(UserCreateDto createDto)
     {
         var user = await _userService.CreateAsync(createDto);
