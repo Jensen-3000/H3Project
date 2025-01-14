@@ -319,147 +319,147 @@ namespace H3Project.Data.Migrations
                             Id = 1,
                             MovieId = 1,
                             ScreenId = 1,
-                            StartTime = new DateTime(2025, 1, 11, 14, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 14, 14, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 2,
                             MovieId = 2,
                             ScreenId = 2,
-                            StartTime = new DateTime(2025, 1, 11, 17, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 14, 17, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 3,
                             MovieId = 3,
                             ScreenId = 3,
-                            StartTime = new DateTime(2025, 1, 11, 20, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 14, 20, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 4,
                             MovieId = 1,
                             ScreenId = 1,
-                            StartTime = new DateTime(2025, 1, 12, 14, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 15, 14, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 5,
                             MovieId = 2,
                             ScreenId = 2,
-                            StartTime = new DateTime(2025, 1, 12, 17, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 15, 17, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 6,
                             MovieId = 3,
                             ScreenId = 3,
-                            StartTime = new DateTime(2025, 1, 12, 20, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 15, 20, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 7,
                             MovieId = 1,
                             ScreenId = 1,
-                            StartTime = new DateTime(2025, 1, 13, 14, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 16, 14, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 8,
                             MovieId = 2,
                             ScreenId = 2,
-                            StartTime = new DateTime(2025, 1, 13, 17, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 16, 17, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 9,
                             MovieId = 3,
                             ScreenId = 3,
-                            StartTime = new DateTime(2025, 1, 13, 20, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 16, 20, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 10,
                             MovieId = 1,
                             ScreenId = 1,
-                            StartTime = new DateTime(2025, 1, 14, 14, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 17, 14, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 11,
                             MovieId = 2,
                             ScreenId = 2,
-                            StartTime = new DateTime(2025, 1, 14, 17, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 17, 17, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 12,
                             MovieId = 3,
                             ScreenId = 3,
-                            StartTime = new DateTime(2025, 1, 14, 20, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 17, 20, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 13,
                             MovieId = 1,
                             ScreenId = 1,
-                            StartTime = new DateTime(2025, 1, 15, 14, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 18, 14, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 14,
                             MovieId = 2,
                             ScreenId = 2,
-                            StartTime = new DateTime(2025, 1, 15, 17, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 18, 17, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 15,
                             MovieId = 3,
                             ScreenId = 3,
-                            StartTime = new DateTime(2025, 1, 15, 20, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 18, 20, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 16,
                             MovieId = 1,
                             ScreenId = 1,
-                            StartTime = new DateTime(2025, 1, 16, 14, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 19, 14, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 17,
                             MovieId = 2,
                             ScreenId = 2,
-                            StartTime = new DateTime(2025, 1, 16, 17, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 19, 17, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 18,
                             MovieId = 3,
                             ScreenId = 3,
-                            StartTime = new DateTime(2025, 1, 16, 20, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 19, 20, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 19,
                             MovieId = 1,
                             ScreenId = 1,
-                            StartTime = new DateTime(2025, 1, 17, 14, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 20, 14, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 20,
                             MovieId = 2,
                             ScreenId = 2,
-                            StartTime = new DateTime(2025, 1, 17, 17, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 20, 17, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             Id = 21,
                             MovieId = 3,
                             ScreenId = 3,
-                            StartTime = new DateTime(2025, 1, 17, 20, 0, 0, 0, DateTimeKind.Local)
+                            StartTime = new DateTime(2025, 1, 20, 20, 0, 0, 0, DateTimeKind.Local)
                         });
                 });
 

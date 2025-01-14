@@ -38,7 +38,6 @@ var connectionString = builder.Configuration.GetConnectionString("LocalDbCinema"
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
-    //options.UseLazyLoadingProxies(); // Use virtual properties to lazy load and avoid using includes everywhere
 });
 
 // AutoMapper
@@ -69,7 +68,7 @@ builder.Services.AddAuthentication(options =>
 // Authorization policies
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("Admin", authBuilder => { authBuilder.RequireRole("Admin"); })
-    .AddPolicy("Customer", authBuilder => { authBuilder.RequireRole("Customer"); });
+    .AddPolicy("User", authBuilder => { authBuilder.RequireRole("User"); });
 
 
 // Services and Repositories
