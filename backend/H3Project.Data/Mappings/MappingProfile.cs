@@ -28,10 +28,12 @@ public class MappingProfile : Profile
                 src.MovieGenres.Select(mg => mg.Movie)));
 
         // Movie
+        CreateMap<MovieModel, MovieCreateDto>().ReverseMap();
         CreateMap<MovieModel, MovieSimpleDto>();
         CreateMap<MovieModel, MovieDetailedDto>()
             .ForMember(dest => dest.Genres, opt => opt.MapFrom(src =>
                 src.MovieGenres.Select(mg => mg.Genre)));
+        CreateMap<MovieModel, MovieUpdateDto>().ReverseMap();
 
         // Screen
         CreateMap<ScreenModel, ScreenSimpleDto>();

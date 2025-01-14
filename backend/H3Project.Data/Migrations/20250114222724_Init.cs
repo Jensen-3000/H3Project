@@ -46,7 +46,7 @@ namespace H3Project.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Slug = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -263,13 +263,13 @@ namespace H3Project.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Movies",
-                columns: new[] { "Id", "Description", "Duration", "ImageUrl", "Slug", "Title" },
+                columns: new[] { "Id", "Description", "Duration", "ImageUrl", "Name", "Slug" },
                 values: new object[,]
                 {
-                    { 1, "Epic space adventure", new TimeSpan(0, 2, 15, 0, 0), "https://placehold.co/400x600?text=Space+Warriors", "space-warriors", "Space Warriors" },
-                    { 2, "Romantic comedy", new TimeSpan(0, 1, 45, 0, 0), "https://placehold.co/400x600?text=Love+and+Laughs", "love-and-laughs", "Love & Laughs" },
-                    { 3, "Horror thriller", new TimeSpan(0, 1, 50, 0, 0), "https://placehold.co/400x600?text=Night+Terror", "night-terror", "Night Terror" },
-                    { 4, "Action drama", new TimeSpan(0, 2, 30, 0, 0), "https://placehold.co/400x600?text=Last+Stand", "the-last-stand", "The Last Stand" }
+                    { 1, "Epic space adventure", new TimeSpan(0, 2, 15, 0, 0), "https://placehold.co/400x600?text=Space+Warriors", "Space Warriors", "space-warriors" },
+                    { 2, "Romantic comedy", new TimeSpan(0, 1, 45, 0, 0), "https://placehold.co/400x600?text=Love+and+Laughs", "Love & Laughs", "love-and-laughs" },
+                    { 3, "Horror thriller", new TimeSpan(0, 1, 50, 0, 0), "https://placehold.co/400x600?text=Night+Terror", "Night Terror", "night-terror" },
+                    { 4, "Action drama", new TimeSpan(0, 2, 30, 0, 0), "https://placehold.co/400x600?text=Last+Stand", "The Last Stand", "the-last-stand" }
                 });
 
             migrationBuilder.InsertData(
@@ -322,27 +322,27 @@ namespace H3Project.Data.Migrations
                 columns: new[] { "Id", "MovieId", "ScreenId", "StartTime" },
                 values: new object[,]
                 {
-                    { 1, 1, 1, new DateTime(2025, 1, 14, 14, 0, 0, 0, DateTimeKind.Local) },
-                    { 2, 2, 2, new DateTime(2025, 1, 14, 17, 0, 0, 0, DateTimeKind.Local) },
-                    { 3, 3, 3, new DateTime(2025, 1, 14, 20, 0, 0, 0, DateTimeKind.Local) },
-                    { 4, 1, 1, new DateTime(2025, 1, 15, 14, 0, 0, 0, DateTimeKind.Local) },
-                    { 5, 2, 2, new DateTime(2025, 1, 15, 17, 0, 0, 0, DateTimeKind.Local) },
-                    { 6, 3, 3, new DateTime(2025, 1, 15, 20, 0, 0, 0, DateTimeKind.Local) },
-                    { 7, 1, 1, new DateTime(2025, 1, 16, 14, 0, 0, 0, DateTimeKind.Local) },
-                    { 8, 2, 2, new DateTime(2025, 1, 16, 17, 0, 0, 0, DateTimeKind.Local) },
-                    { 9, 3, 3, new DateTime(2025, 1, 16, 20, 0, 0, 0, DateTimeKind.Local) },
-                    { 10, 1, 1, new DateTime(2025, 1, 17, 14, 0, 0, 0, DateTimeKind.Local) },
-                    { 11, 2, 2, new DateTime(2025, 1, 17, 17, 0, 0, 0, DateTimeKind.Local) },
-                    { 12, 3, 3, new DateTime(2025, 1, 17, 20, 0, 0, 0, DateTimeKind.Local) },
-                    { 13, 1, 1, new DateTime(2025, 1, 18, 14, 0, 0, 0, DateTimeKind.Local) },
-                    { 14, 2, 2, new DateTime(2025, 1, 18, 17, 0, 0, 0, DateTimeKind.Local) },
-                    { 15, 3, 3, new DateTime(2025, 1, 18, 20, 0, 0, 0, DateTimeKind.Local) },
-                    { 16, 1, 1, new DateTime(2025, 1, 19, 14, 0, 0, 0, DateTimeKind.Local) },
-                    { 17, 2, 2, new DateTime(2025, 1, 19, 17, 0, 0, 0, DateTimeKind.Local) },
-                    { 18, 3, 3, new DateTime(2025, 1, 19, 20, 0, 0, 0, DateTimeKind.Local) },
-                    { 19, 1, 1, new DateTime(2025, 1, 20, 14, 0, 0, 0, DateTimeKind.Local) },
-                    { 20, 2, 2, new DateTime(2025, 1, 20, 17, 0, 0, 0, DateTimeKind.Local) },
-                    { 21, 3, 3, new DateTime(2025, 1, 20, 20, 0, 0, 0, DateTimeKind.Local) }
+                    { 1, 1, 1, new DateTime(2025, 1, 15, 14, 0, 0, 0, DateTimeKind.Local) },
+                    { 2, 2, 2, new DateTime(2025, 1, 15, 17, 0, 0, 0, DateTimeKind.Local) },
+                    { 3, 3, 3, new DateTime(2025, 1, 15, 20, 0, 0, 0, DateTimeKind.Local) },
+                    { 4, 1, 1, new DateTime(2025, 1, 16, 14, 0, 0, 0, DateTimeKind.Local) },
+                    { 5, 2, 2, new DateTime(2025, 1, 16, 17, 0, 0, 0, DateTimeKind.Local) },
+                    { 6, 3, 3, new DateTime(2025, 1, 16, 20, 0, 0, 0, DateTimeKind.Local) },
+                    { 7, 1, 1, new DateTime(2025, 1, 17, 14, 0, 0, 0, DateTimeKind.Local) },
+                    { 8, 2, 2, new DateTime(2025, 1, 17, 17, 0, 0, 0, DateTimeKind.Local) },
+                    { 9, 3, 3, new DateTime(2025, 1, 17, 20, 0, 0, 0, DateTimeKind.Local) },
+                    { 10, 1, 1, new DateTime(2025, 1, 18, 14, 0, 0, 0, DateTimeKind.Local) },
+                    { 11, 2, 2, new DateTime(2025, 1, 18, 17, 0, 0, 0, DateTimeKind.Local) },
+                    { 12, 3, 3, new DateTime(2025, 1, 18, 20, 0, 0, 0, DateTimeKind.Local) },
+                    { 13, 1, 1, new DateTime(2025, 1, 19, 14, 0, 0, 0, DateTimeKind.Local) },
+                    { 14, 2, 2, new DateTime(2025, 1, 19, 17, 0, 0, 0, DateTimeKind.Local) },
+                    { 15, 3, 3, new DateTime(2025, 1, 19, 20, 0, 0, 0, DateTimeKind.Local) },
+                    { 16, 1, 1, new DateTime(2025, 1, 20, 14, 0, 0, 0, DateTimeKind.Local) },
+                    { 17, 2, 2, new DateTime(2025, 1, 20, 17, 0, 0, 0, DateTimeKind.Local) },
+                    { 18, 3, 3, new DateTime(2025, 1, 20, 20, 0, 0, 0, DateTimeKind.Local) },
+                    { 19, 1, 1, new DateTime(2025, 1, 21, 14, 0, 0, 0, DateTimeKind.Local) },
+                    { 20, 2, 2, new DateTime(2025, 1, 21, 17, 0, 0, 0, DateTimeKind.Local) },
+                    { 21, 3, 3, new DateTime(2025, 1, 21, 20, 0, 0, 0, DateTimeKind.Local) }
                 });
 
             migrationBuilder.InsertData(

@@ -135,7 +135,7 @@ public static class ModelBuilderExtensions
             new MovieModel
             {
                 Id = 1,
-                Title = "Space Warriors",
+                Name = "Space Warriors",
                 Description = "Epic space adventure",
                 ImageUrl = "https://placehold.co/400x600?text=Space+Warriors",
                 Slug = "space-warriors",
@@ -144,7 +144,7 @@ public static class ModelBuilderExtensions
             new MovieModel
             {
                 Id = 2,
-                Title = "Love & Laughs",
+                Name = "Love & Laughs",
                 Description = "Romantic comedy",
                 ImageUrl = "https://placehold.co/400x600?text=Love+and+Laughs",
                 Slug = "love-and-laughs",
@@ -153,7 +153,7 @@ public static class ModelBuilderExtensions
             new MovieModel
             {
                 Id = 3,
-                Title = "Night Terror",
+                Name = "Night Terror",
                 Description = "Horror thriller",
                 ImageUrl = "https://placehold.co/400x600?text=Night+Terror",
                 Slug = "night-terror",
@@ -162,7 +162,7 @@ public static class ModelBuilderExtensions
             new MovieModel
             {
                 Id = 4,
-                Title = "The Last Stand",
+                Name = "The Last Stand",
                 Description = "Action drama",
                 ImageUrl = "https://placehold.co/400x600?text=Last+Stand",
                 Slug = "the-last-stand",

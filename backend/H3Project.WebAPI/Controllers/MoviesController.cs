@@ -17,15 +17,21 @@ public class MoviesController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MovieSimpleDto>>> GetAll()
-        => Ok(await _movieService.GetAllAsync());
+    {
+        return Ok(await _movieService.GetAllAsync());
+    }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<MovieDetailedDto>> GetById(int id)
-        => Ok(await _movieService.GetByIdAsync(id));
+    {
+        return Ok(await _movieService.GetByIdAsync(id));
+    }
 
     [HttpGet("{slug}")]
     public async Task<ActionResult<MovieDetailedDto>> GetBySlug(string slug)
-        => Ok(await _movieService.GetBySlugAsync(slug));
+    {
+        return Ok(await _movieService.GetBySlugAsync(slug));
+    }
 
     [HttpPost]
     public async Task<ActionResult<MovieSimpleDto>> Create(MovieCreateDto createDto)

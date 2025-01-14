@@ -12,7 +12,7 @@ public class ScreeningSimpleDto
 
 public class ScreeningDetailsDto
 {
-    public string MovieTitle { get; set; }
+    public string MovieName { get; set; }
     public string ScreenName { get; set; }
 }
 
